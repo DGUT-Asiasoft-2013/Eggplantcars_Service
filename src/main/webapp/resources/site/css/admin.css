@@ -1,0 +1,15 @@
+body {
+	margin: 0;
+}
+
+.banner {
+	width: 100%;
+	height: 1.6cm;
+	line-height: 1.6cm;
+	background-color: #aaf;
+	color: white;
+}
+
+.banner .title{
+	text-align:center;
+}
