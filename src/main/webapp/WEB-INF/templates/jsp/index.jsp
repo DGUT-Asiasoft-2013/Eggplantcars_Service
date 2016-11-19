@@ -3,21 +3,37 @@
 <%@ include file="common/head.jsp"%>
 <html>
 	<head>
-		<title>Member Center</title>
-		<link rel="stylesheet" href="/resources/jquery-ui/jquery-ui.css">
-		<link rel="stylesheet" href="/resources/site/css/admin.css">
-		<script src="/resources/jquery-ui/external/jquery/jquery.js"></script>
-		<script src="/resources/jquery-ui/jquery-ui.js"></script>
+		<title>Member Center - Staff</title>
+		<meta charset="utf-8">
+	    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+	    <meta name="viewport" content="width=device-width, initial-scale=1">
+		<link rel="stylesheet" href="/resources/bootstrap/css/bootstrap.min.css">
+		<link rel="stylesheet" href="/resources/private/css/admin.css">
 	</head>
 
 	<body>
-		<div class="banner">
-			<h1 class="title">Member Center</h1>
-		</div>
+		<nav class="navbar navbar-inverse navbar-fixed-top">
+	      <div class="container">
+	        <div class="navbar-header">
+	          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+	            <span class="sr-only">Toggle navigation</span>
+	            <span class="icon-bar"></span>
+	            <span class="icon-bar"></span>
+	            <span class="icon-bar"></span>
+	          </button>
+	          <a class="navbar-brand" href="#">Member Center</a>
+	        </div>
+	        <div id="navbar" class="collapse navbar-collapse">
+	          <ul class="nav navbar-nav">
+	            <li class="active"><a href="#">Staff</a></li>
+	            <li><a href="#about">Members</a></li>
+	            <li><a href="#contact">Settings</a></li>
+	          </ul>
+	        </div>
+	      </div>
+	    </nav>
 		
-		<input type="text" name="date" id="date">
-		<script type="text/javascript">
-			$('#date').datepicker();
-		</script>
+		<script src="/resources/jquery/jquery-3.1.1.min.js"></script>
+		<script src="/resources/bootstrap/js/bootstrap.min.js"></script>
 	</body>
 </html>
