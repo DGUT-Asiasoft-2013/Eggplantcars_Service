@@ -1,4 +1,4 @@
-package com.cloudage.web.controller;
+package com.cloudage.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
