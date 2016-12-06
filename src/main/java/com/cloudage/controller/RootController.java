@@ -1,16 +1,24 @@
 package com.cloudage.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.cloudage.service.IAdminService;
+
 @Controller
-public class IndexController {
+@RequestMapping("/")
+public class RootController {
+	@Autowired
+	IAdminService adminService;
+	
 	@RequestMapping(value = "/", method = RequestMethod.GET)
-	public String index(ModelMap model){
+	public @ResponseBody String index(ModelMap model){
 		model.addAttribute("message","Member Center Index");
 		return "index";
 	}
