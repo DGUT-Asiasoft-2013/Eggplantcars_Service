@@ -1,4 +1,4 @@
-package com.cloudage.service;
+package com.cloudage.membercenter.service;
 
 import javax.servlet.http.HttpSession;
 
@@ -7,8 +7,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.cloudage.entity.User;
-import com.cloudage.repository.IUserRepository;
+import com.cloudage.membercenter.entity.User;
+import com.cloudage.membercenter.repository.IUserRepository;
 
 @Component
 @Service

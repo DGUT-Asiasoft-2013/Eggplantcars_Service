@@ -1,8 +1,8 @@
-package com.cloudage.service;
+package com.cloudage.membercenter.service;
 
 import java.util.List;
 
-import com.cloudage.entity.Admin;
+import com.cloudage.membercenter.entity.Admin;
 
 public interface IAdminService {
 	Admin create(String account, String passwordHash);

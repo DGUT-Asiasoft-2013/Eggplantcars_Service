@@ -1,6 +1,6 @@
-package com.cloudage.service;
+package com.cloudage.membercenter.service;
 
-import com.cloudage.entity.User;
+import com.cloudage.membercenter.entity.User;
 
 public interface IUserService {
 	User create(String account, String passwordHash);

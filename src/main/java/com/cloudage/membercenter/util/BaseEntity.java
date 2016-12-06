@@ -1,4 +1,4 @@
-package com.cloudage.util;
+package com.cloudage.membercenter.util;
 
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;

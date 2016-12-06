@@ -1,4 +1,4 @@
-package com.cloudage.controller;
+package com.cloudage.membercenter.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.cloudage.service.IAdminService;
+import com.cloudage.membercenter.service.IAdminService;
 
 @Controller
 @RequestMapping("/")

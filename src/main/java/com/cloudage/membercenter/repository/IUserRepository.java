@@ -1,7 +1,9 @@
-package com.cloudage.repository;
+package com.cloudage.membercenter.repository;
 
 import org.springframework.stereotype.Repository;
-import com.cloudage.entity.User;
+
+import com.cloudage.membercenter.entity.User;
+
 import org.springframework.data.repository.PagingAndSortingRepository;
 
 @Repository

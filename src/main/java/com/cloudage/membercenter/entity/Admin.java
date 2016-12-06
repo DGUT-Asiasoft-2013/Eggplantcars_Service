@@ -1,9 +1,9 @@
-package com.cloudage.entity;
+package com.cloudage.membercenter.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 
-import com.cloudage.util.BaseEntity;
+import com.cloudage.membercenter.util.BaseEntity;
 
 @Entity
 public class Admin extends BaseEntity {

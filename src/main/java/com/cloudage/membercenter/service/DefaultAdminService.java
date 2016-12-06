@@ -1,4 +1,4 @@
-package com.cloudage.service;
+package com.cloudage.membercenter.service;
 
 import java.util.List;
 
@@ -7,8 +7,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.cloudage.entity.Admin;
-import com.cloudage.repository.IAdminRepository;
+import com.cloudage.membercenter.entity.Admin;
+import com.cloudage.membercenter.repository.IAdminRepository;
 
 @Component
 @Service
