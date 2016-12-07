@@ -18,7 +18,7 @@ public class RootController {
 	IAdminService adminService;
 	
 	@RequestMapping(value = "/", method = RequestMethod.GET)
-	public @ResponseBody String index(ModelMap model){
+	public String index(ModelMap model){
 		model.addAttribute("message","Member Center Index");
 		return "index";
 	}
