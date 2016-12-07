@@ -5,7 +5,7 @@
 	<artifactId>membercenter</artifactId>
 	<packaging>war</packaging>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>ssh-demo Maven Webapp</name>
+	<name>MemberCenter Maven Webapp</name>
 	<url>http://maven.apache.org</url>
 
 	<repositories>
@@ -273,13 +273,15 @@
 				<version>2.2</version>
 			</plugin>
 			<plugin>
-				<groupId>org.eclipse.jetty</groupId>
+				<groupId>org.mortbay.jetty</groupId>
 				<artifactId>jetty-maven-plugin</artifactId>
-				<version>9.0.6.v20130930</version>
+				<version>8.1.16.v20140903</version>
 				<configuration>
 					<webApp>
 						<contextPath>/${project.artifactId}</contextPath>
 					</webApp>
+					<reload>automatic</reload>
+					<scanIntervalSeconds>1</scanIntervalSeconds>
 				</configuration>
 			</plugin>
 		</plugins>
