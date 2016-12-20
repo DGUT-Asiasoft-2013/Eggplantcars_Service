@@ -2,6 +2,7 @@ package com.cloudage.membercenter.entity;
 
 import java.util.Date;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 import javax.persistence.PrePersist;
@@ -19,12 +20,14 @@ public class Deal extends BaseEntity {
 
 	String title;
 	String text;
+
 	String getSellerName;
     String dealAvatar;
     String carModel;
     String travelDistance;
-    Date buyDate;
-    Integer price;
+    String buyDate;
+    String price;
+
     
     @ManyToOne(optional = false)
 	@JsonIgnore
@@ -34,6 +37,16 @@ public class Deal extends BaseEntity {
 	public void setSeller(User seller) {
 		this.seller = seller;
 	}
+	@Transient
+	public String getSellerName(){
+		return seller.name;
+	}
+	@Transient
+	@JsonIgnore
+	public String getSellerAvatar(){
+		return seller.avatar;
+	}
+	@Column(updatable = false)
 	public Date getCreateDate() {
 		return createDate;
 	}
@@ -58,44 +71,41 @@ public class Deal extends BaseEntity {
 	public void setText(String text) {
 		this.text = text;
 	}
-	@Transient
-	public String getGetSellerName() {
-		return getSellerName;
-	}
-	public void setGetSellerName(String getSellerName) {
-		this.getSellerName = getSellerName;
-	}
 	public String getDealAvatar() {
 		return dealAvatar;
 	}
 	public void setDealAvatar(String dealAvatar) {
 		this.dealAvatar = dealAvatar;
 	}
+	
 	public String getCarModel() {
 		return carModel;
 	}
 	public void setCarModel(String carModel) {
 		this.carModel = carModel;
 	}
+	
 	public String getTravelDistance() {
 		return travelDistance;
 	}
 	public void setTravelDistance(String travelDistance) {
 		this.travelDistance = travelDistance;
 	}
-	public Date getBuyDate() {
+	
+	
+	public String getBuyDate() {
 		return buyDate;
 	}
-	public void setBuyDate(Date buyDate) {
+	public void setBuyDate(String buyDate) {
 		this.buyDate = buyDate;
 	}
-	public Integer getPrice() {
+	
+	public String getPrice() {
 		return price;
 	}
-	public void setPrice(Integer price) {
+	public void setPrice(String price) {
 		this.price = price;
 	}
-	
 	@PreUpdate
 	void onPreUpdate() {
 		editDate = new Date();
