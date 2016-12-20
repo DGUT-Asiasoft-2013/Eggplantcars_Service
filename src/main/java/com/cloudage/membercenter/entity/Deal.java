@@ -17,14 +17,14 @@ public class Deal extends BaseEntity {
 	Date createDate;
 	Date editDate;
 
-	String title;//交易标题
-	String text;//商品描述
+	String title;
+	String text;
 	String getSellerName;
-    String dealAvatar;//商品照片
-    String carModel;//汽车型号
-    String travelDistance;//行驶里程
-    Date buyDate;//购买时间
-    Integer price;//售价
+    String dealAvatar;
+    String carModel;
+    String travelDistance;
+    Date buyDate;
+    Integer price;
     
     @ManyToOne(optional = false)
 	@JsonIgnore

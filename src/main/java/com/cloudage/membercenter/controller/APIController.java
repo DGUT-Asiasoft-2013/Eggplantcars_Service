@@ -120,7 +120,7 @@ public class APIController {
 	
 	
 	//ÐÞ¸ÄÃÜÂë
-	@RequestMapping(value="/repassword",method=RequestMethod.POST)
+	@RequestMapping(value="/passwordrecover",method=RequestMethod.POST)
 	public boolean repassword(
 			@RequestParam String email,
 			@RequestParam String passwordHash,
