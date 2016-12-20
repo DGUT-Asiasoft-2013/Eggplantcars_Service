@@ -18,10 +18,12 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.cloudage.membercenter.entity.Article;
 import com.cloudage.membercenter.entity.Comment;
+import com.cloudage.membercenter.entity.News;
 import com.cloudage.membercenter.entity.User;
 import com.cloudage.membercenter.service.IArticleService;
 import com.cloudage.membercenter.service.ICommentService;
 import com.cloudage.membercenter.service.ILikesService;
+import com.cloudage.membercenter.service.INewsService;
 import com.cloudage.membercenter.service.IUserService;
 import org.apache.commons.io.FileUtils;
 import org.junit.runner.Request;
@@ -36,6 +38,8 @@ public class APIController {
 	ICommentService commentService;
 	@Autowired
 	ILikesService likesService;
+	@Autowired
+	INewsService newsService;
 
 	@RequestMapping(value = "/hello", method=RequestMethod.GET)
 	public @ResponseBody String hello(){	
@@ -132,7 +136,7 @@ public class APIController {
 	}
 	
 	
-	//图片
+	//文章上传
 	@RequestMapping(value="/article",method=RequestMethod.POST)
 	public Article addArticle(
 			@RequestParam String title,
@@ -210,7 +214,7 @@ public class APIController {
 
 	
 	
-	//文章上传
+	//评论上传
 	@RequestMapping(value="/article/{article_id}/comments",method=RequestMethod.POST)
 	public Comment postComment(
 			@PathVariable int article_id,
@@ -223,6 +227,30 @@ public class APIController {
 		comment.setArticle(article);
 		comment.setText(text);
 		return commentService.save(comment);
+	}
+
+	//news 上传
+	@RequestMapping(value="/news",method = RequestMethod.POST)
+	public News postNews(
+			@RequestParam String title,
+			@RequestParam String text,
+			HttpServletRequest request){
+		User me = getCurrentUser(request);
+		News news  = new News();
+		news.setAuthor(me);
+		news.setTitle(title);
+		news.setText(text);
+		return newsService.save(news);
+	}
+	//显示news
+	@RequestMapping(value="/shownews",method = RequestMethod.GET)
+	public Page<News> getNews(){
+		return getNews(0);
+	}
+	@RequestMapping(value="/shownews/{page}",method= RequestMethod.GET)
+	public Page<News> getNews(
+			@PathVariable int page){
+		return newsService.getNews(page);
 	}
 	
 	
