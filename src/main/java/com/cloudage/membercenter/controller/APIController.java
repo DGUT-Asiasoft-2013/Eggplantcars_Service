@@ -44,9 +44,8 @@ public class APIController {
 	@Autowired
 	ILikesService likesService;
 	@Autowired
-
 	IDealService dealService;
-
+	@Autowired
 	INewsService newsService;
 
 
@@ -258,7 +257,7 @@ public class APIController {
 	//œ‘ ænews
 	@RequestMapping(value="/shownews",method = RequestMethod.GET)
 	public Page<News> getNews(){
-		return getNews(0);
+		return newsService.getNews(0);
 	}
 	@RequestMapping(value="/shownews/{page}",method= RequestMethod.GET)
 	public Page<News> getNews(
