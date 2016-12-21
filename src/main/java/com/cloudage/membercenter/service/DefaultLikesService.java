@@ -39,7 +39,6 @@ public class DefaultLikesService implements ILikesService {
 		key.setUser(user);
 		key.setArticle(article);
 		likesRepo.delete(key);
-
 	}
 
 	@Override

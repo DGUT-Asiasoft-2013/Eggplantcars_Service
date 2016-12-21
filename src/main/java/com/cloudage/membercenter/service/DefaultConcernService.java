@@ -44,4 +44,10 @@ public class DefaultConcernService implements IConcernService  {
 		key.setUser(news_author);
 		concernRepo.delete(key);
 	}
+	
+	@Override
+	public int countConcerns(int news_author_id) {
+		return concernRepo.concernCountsOfAuthorId(news_author_id);
+	}
+
 }

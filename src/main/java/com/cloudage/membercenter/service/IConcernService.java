@@ -10,4 +10,6 @@ public interface IConcernService {
 	void removeConcern(User user,User news_author);
 
 	boolean checkConcerned(int userId, int newsauthorId);
+
+	int countConcerns(int news_author_id);
 }
