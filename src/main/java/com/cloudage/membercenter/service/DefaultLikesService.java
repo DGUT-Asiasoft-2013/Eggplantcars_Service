@@ -31,7 +31,6 @@ public class DefaultLikesService implements ILikesService {
 		Likes lk = new Likes();
 		lk.setIdKey(key);
 		likesRepo.save(lk);
-
 	}
 
 	@Override
