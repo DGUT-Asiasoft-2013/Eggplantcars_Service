@@ -13,6 +13,4 @@ public interface IConcernRepository extends PagingAndSortingRepository<Concern,C
 	@Query("select count(*) from Concern concern where concern.id.user.id = ?1 and concern.id.news_author.id = ?2")
 	int checkConcernExsists(int authorId, int newsauthorid);
 
-	@Query("select count(*) from Concern concern where concern.id.news_author.id = ?1")
-	int concernCountsOfAuthorId(int news_author_id);
 }

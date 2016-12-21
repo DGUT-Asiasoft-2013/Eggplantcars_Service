@@ -45,11 +45,6 @@ public class YeController {
 		Integer uid=(Integer) session.getAttribute("uid");
 		return userService.findById(uid);
 	}
-	
-	@RequestMapping("/{news_author_id}/Concerns")
-	public int countLikes(@PathVariable int news_author_id){
-		return concernService.countConcerns(news_author_id);
-	}
 
 	@RequestMapping("/{news_author_id}/isConcerned")
 	public boolean checkConcerned(
@@ -60,9 +55,9 @@ public class YeController {
 	}
 
 	@RequestMapping(value="/{news_author_id}/Concerns",method = RequestMethod.POST)
-	public int changeConcerns(
+	public boolean changeConcerns(
 			@PathVariable int news_author_id,
-			@RequestParam boolean Concern,
+			@RequestParam(name="Concern") boolean Concern,
 			HttpServletRequest request){
 		User me = getCurrentUser(request);
 		User news_author = userService.findById(news_author_id);
@@ -72,6 +67,6 @@ public class YeController {
 		} else {
 			concernService.removeConcern(me, news_author);
 		}
-		return 1;
+		return Concern;
 	}
 }

@@ -9,7 +9,6 @@ import org.springframework.transaction.annotation.Transactional;
 import com.cloudage.membercenter.entity.User;
 import com.cloudage.membercenter.entity.Concern;
 import com.cloudage.membercenter.entity.Concern.Key;
-import com.cloudage.membercenter.entity.News;
 import com.cloudage.membercenter.repository.IConcernRepository;
 
 
@@ -25,7 +24,7 @@ public class DefaultConcernService implements IConcernService  {
 	public void addConcern(User user, User news_author) {
 		Concern.Key key = new Key();
 		key.setUser(user);
-		key.setUser(news_author);
+		key.setNews_author(news_author);
 		Concern lk = new Concern();
 		lk.setIdKey(key);
 		concernRepo.save(lk);
@@ -41,13 +40,8 @@ public class DefaultConcernService implements IConcernService  {
 		// TODO Auto-generated method stub
 		Concern.Key key = new Key();
 		key.setUser(user);
-		key.setUser(news_author);
+		key.setNews_author(news_author);
 		concernRepo.delete(key);
-	}
-	
-	@Override
-	public int countConcerns(int news_author_id) {
-		return concernRepo.concernCountsOfAuthorId(news_author_id);
 	}
 
 }

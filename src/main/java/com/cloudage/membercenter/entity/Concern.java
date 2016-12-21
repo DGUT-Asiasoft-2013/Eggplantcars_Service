@@ -20,7 +20,7 @@ public class Concern {
 		User user;
 		User news_author;
 
-		@OneToOne(optional = false)
+		@ManyToOne(optional = false)
 		public User getUser() {
 			return user;
 		}
@@ -30,7 +30,7 @@ public class Concern {
 		}
 
 
-		@OneToOne(optional = false)
+		@ManyToOne(optional = false)
 		public User getNews_author() {
 			return news_author;
 		}

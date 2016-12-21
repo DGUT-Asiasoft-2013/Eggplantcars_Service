@@ -1,6 +1,5 @@
 package com.cloudage.membercenter.service;
 
-import com.cloudage.membercenter.entity.News;
 import com.cloudage.membercenter.entity.User;
 
 public interface IConcernService {
@@ -11,5 +10,4 @@ public interface IConcernService {
 
 	boolean checkConcerned(int userId, int newsauthorId);
 
-	int countConcerns(int news_author_id);
 }
