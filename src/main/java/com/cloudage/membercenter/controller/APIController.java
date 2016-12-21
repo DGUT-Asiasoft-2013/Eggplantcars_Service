@@ -44,9 +44,8 @@ public class APIController {
 	@Autowired
 	ILikesService likesService;
 	@Autowired
-
 	IDealService dealService;
-
+	@Autowired
 	INewsService newsService;
 
 
@@ -122,7 +121,7 @@ public class APIController {
 	@RequestMapping(value="/me",method=RequestMethod.GET)
 	public User getCurrentUser(HttpServletRequest request)
 	{
-		HttpSession session=request.getSession(true);
+		HttpSession session=request.getSession();
 		Integer uid=(Integer) session.getAttribute("uid");
 		return userService.findById(uid);
 	}
@@ -347,6 +346,13 @@ public class APIController {
 	public Page<Deal> getDealItems(){
 		return getDealItems(0);
 	}
-
+	
+	@RequestMapping("/deal/s/{keyword}")
+	public Page<Deal> searchDealByKeword(
+			@PathVariable String keyword,
+			@RequestParam (defaultValue="0") int page
+			){
+		return dealService.searchTextByKeyword(keyword,page);
+	}
 
 }

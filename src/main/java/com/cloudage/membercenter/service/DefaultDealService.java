@@ -32,5 +32,12 @@ public class DefaultDealService implements IDealService{
 		PageRequest pageRequest = new PageRequest(page, 10, sort);
 		return dealRepo.findAll(pageRequest);
 	}
+	@Override
+	public Page<Deal> searchTextByKeyword(String keyword, int page) {
+		// TODO Auto-generated method stub
+		Sort sort = new Sort(Direction.DESC,"createDate");  //≈≈–Ú
+		PageRequest pageRequest = new PageRequest(page, 5, sort);
+		return dealRepo.searchTextWithKeyword(keyword, pageRequest);
+	}
 
 }
