@@ -246,18 +246,29 @@ public class APIController {
 	public News postNews(
 			@RequestParam String title,
 			@RequestParam String text,
+			MultipartFile avatar,
 			HttpServletRequest request){
 		User me = getCurrentUser(request);
 		News news  = new News();
 		news.setAuthor(me);
 		news.setTitle(title);
 		news.setText(text);
+		if(avatar != null){
+			try {
+				String realPath = request.getSession().getServletContext().getRealPath("/WEB-INF/newsload");
+				FileUtils.copyInputStreamToFile(avatar.getInputStream(), new File(realPath,title+".png"));
+				news.setAvatar("newsload/"+title+".png");
+			} catch (Exception e) {
+				// TODO: handle exception
+				e.printStackTrace();
+			}
+		}
 		return newsService.save(news);
 	}
 	//œ‘ ænews
 	@RequestMapping(value="/shownews",method = RequestMethod.GET)
 	public Page<News> getNews(){
-		return getNews(0);
+		return newsService.getNews(0);
 	}
 	@RequestMapping(value="/shownews/{page}",method= RequestMethod.GET)
 	public Page<News> getNews(
