@@ -17,7 +17,7 @@ public class Concern {
 	@Embeddable
 	public static class Key implements Serializable {
 		User user;
-		User news_auhor;
+		User news_author;
 
 		@ManyToOne(optional = false)
 		public User getUser() {
@@ -30,19 +30,19 @@ public class Concern {
 
 
 		@ManyToOne(optional = false)
-		public User getNews_auhor() {
-			return news_auhor;
+		public User getNews_author() {
+			return news_author;
 		}
 
-		public void setNews_auhor(User news_auhor) {
-			this.news_auhor = news_auhor;
+		public void setNews_author(User news_author) {
+			this.news_author = news_author;
 		}
 
 		@Override
 		public boolean equals(Object obj) {
 			if (obj instanceof Key) {
 				Key other = (Key) obj;
-				return news_auhor.getId() == other.news_auhor.getId() && user.getId() == other.user.getId();
+				return news_author.getId() == other.news_author.getId() && user.getId() == other.user.getId();
 			} else {
 				return false;
 			}
@@ -50,7 +50,7 @@ public class Concern {
 
 		@Override
 		public int hashCode() {
-			return news_auhor.getId();
+			return news_author.getId();
 		}
 	}
 

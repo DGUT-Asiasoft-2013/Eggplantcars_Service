@@ -57,12 +57,12 @@ public class YeController {
 	@RequestMapping(value="/{news_author_id}/Concerns",method = RequestMethod.POST)
 	public boolean changeConcerns(
 			@PathVariable int news_author_id,
-			@RequestParam boolean Concerns,
+			@RequestParam boolean Concern,
 			HttpServletRequest request){
 		User me = getCurrentUser(request);
 		User news_author = userService.findById(news_author_id);
 
-		if (Concerns) {
+		if (Concern) {
 			concernService.addConcern(me, news_author);
 		} else {
 			concernService.removeConcern(me, news_author);
