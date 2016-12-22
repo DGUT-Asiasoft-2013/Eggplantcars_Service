@@ -96,12 +96,28 @@ public class YeController {
 			HttpServletRequest request){
 		User me = getCurrentUser(request);
 		News news = newsService.findOne(news_id);
-
 		if (likes) {
 			likesService.addLike(me, news);
 		} else {
 			likesService.removeLike(me, news);
 		}
 		return likesService.countLikes(news_id);
+	} 
+
+	//ÐÞ¸ÄÃÜÂë
+	@RequestMapping(value="/passwordchange",method=RequestMethod.POST)
+	public boolean repassword(
+			@RequestParam String password,
+			@RequestParam String passwordHash,
+			HttpServletRequest request){
+		User me = getCurrentUser(request);
+		User user =userService.findByPasswordHash(me.getId(),password);
+		if (user==null) {
+			return false;
+		}else{
+			user.setPasswordHash(passwordHash);
+			userService.save(user);
+			return true;
+		}
 	}
 }

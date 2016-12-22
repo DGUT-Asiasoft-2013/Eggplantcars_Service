@@ -1,7 +1,5 @@
 package com.cloudage.membercenter.service;
 
-import javax.servlet.http.HttpSession;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
@@ -22,7 +20,7 @@ public class DefaultUserService implements IUserService {
 	public User save(User user) {
 		return userRepo.save(user);
 	}
-	
+
 	public User findByAccount(String account){
 		return userRepo.findUserByAccount(account);
 	}
@@ -33,11 +31,15 @@ public class DefaultUserService implements IUserService {
 	}
 
 	@Override
+	public User findByPasswordHash(Integer userId,String passwordHash) {
+		return userRepo.findUserByPasswordHash(userId,passwordHash);
+	}
+
+	@Override
 	public User findByEmail(String email) {
 		return userRepo.findUserByEmail(email);
 	}
-	
-	
+
+
 }
-	
-	
+

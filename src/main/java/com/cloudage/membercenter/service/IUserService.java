@@ -8,4 +8,5 @@ public interface IUserService {
 	User findByAccount(String account);
 	User findById(Integer uid);
 	User findByEmail(String email);
+	User findByPasswordHash(Integer userId,String passwordHash);
 }
