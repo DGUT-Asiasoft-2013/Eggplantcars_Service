@@ -14,7 +14,7 @@ import com.cloudage.membercenter.entity.Likes.Key;
 import com.cloudage.membercenter.util.BaseEntity;
 
 @Entity
-public class PrivateLatter extends BaseEntity {
+public class PrivateLatter {
 
 	
 	@Embeddable
