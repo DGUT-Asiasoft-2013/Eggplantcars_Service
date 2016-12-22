@@ -10,9 +10,6 @@ import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 import javax.persistence.PrePersist;
 
-import com.cloudage.membercenter.entity.Likes.Key;
-import com.cloudage.membercenter.util.BaseEntity;
-
 @Entity
 public class PrivateLatter {
 
