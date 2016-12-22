@@ -7,5 +7,6 @@ import com.cloudage.membercenter.entity.Deal;
 public interface IDealService {
 	Deal save(Deal deal);
 	Page<Deal> getDealItems(int page);
+	Page<Deal> searchTextByKeyword(String keyword, int page);
 
 }

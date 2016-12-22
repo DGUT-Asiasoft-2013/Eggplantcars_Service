@@ -20,6 +20,7 @@ public class News extends DateRecord{
 	public User getAuthor() {
 		return author;
 	}
+	
 	public void setAuthor(User author) {
 		this.author = author;
 	}
@@ -31,6 +32,11 @@ public class News extends DateRecord{
 	@Transient
 	public String getAuthorAvatar(){
 		return author.avatar;
+	}
+	
+	@Transient
+	public Integer getAuthorId(){
+		return author.getId();
 	}
 	
 	public String getTitle() {
