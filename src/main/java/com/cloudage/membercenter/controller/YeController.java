@@ -11,9 +11,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.cloudage.membercenter.entity.Article;
 import com.cloudage.membercenter.entity.News;
 import com.cloudage.membercenter.entity.User;
 import com.cloudage.membercenter.service.IConcernService;
+import com.cloudage.membercenter.service.ILikesService;
 import com.cloudage.membercenter.service.INewsService;
 import com.cloudage.membercenter.service.IUserService;
 
@@ -24,6 +26,9 @@ public class YeController {
 
 	@Autowired
 	IUserService userService;
+
+	@Autowired
+	ILikesService likesService;
 
 	@Autowired
 	INewsService newsService;
@@ -68,5 +73,35 @@ public class YeController {
 			concernService.removeConcern(me, news_author);
 		}
 		return Concern;
+	}
+
+	//µãÔÞ
+	@RequestMapping("/news/{news_id}/likes")
+	public int countLikes(@PathVariable int news_id){
+		return likesService.countLikes(news_id);
+	}
+
+	@RequestMapping("/news/{news_id}/isliked")
+	public boolean checkLiked(
+			@PathVariable int news_id,
+			HttpServletRequest request){
+		User me = getCurrentUser(request);
+		return likesService.checkLiked(me.getId(), news_id);
+	}
+
+	@RequestMapping(value="/news/{news_id}/likes",method = RequestMethod.POST)
+	public int changeLikes(
+			@PathVariable int news_id,
+			@RequestParam boolean likes,
+			HttpServletRequest request){
+		User me = getCurrentUser(request);
+		News news = newsService.findOne(news_id);
+
+		if (likes) {
+			likesService.addLike(me, news);
+		} else {
+			likesService.removeLike(me, news);
+		}
+		return likesService.countLikes(news_id);
 	}
 }
