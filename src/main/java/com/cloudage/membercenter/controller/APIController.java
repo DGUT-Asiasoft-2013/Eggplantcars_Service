@@ -22,12 +22,13 @@ import com.cloudage.membercenter.entity.Comment;
 import com.cloudage.membercenter.entity.Deal;
 
 import com.cloudage.membercenter.entity.News;
-
+import com.cloudage.membercenter.entity.NewsComment;
 import com.cloudage.membercenter.entity.User;
 import com.cloudage.membercenter.service.IArticleService;
 import com.cloudage.membercenter.service.ICommentService;
 import com.cloudage.membercenter.service.IDealService;
 import com.cloudage.membercenter.service.ILikesService;
+import com.cloudage.membercenter.service.INewsCommentService;
 import com.cloudage.membercenter.service.INewsService;
 import com.cloudage.membercenter.service.IUserService;
 import org.apache.commons.io.FileUtils;
@@ -47,6 +48,8 @@ public class APIController {
 	IDealService dealService;
 	@Autowired
 	INewsService newsService;
+	@Autowired
+	INewsCommentService newsCommentService;
 
 
 	@RequestMapping(value = "/hello", method=RequestMethod.GET)
@@ -340,4 +343,17 @@ public class APIController {
 		return dealService.searchTextByKeyword(keyword,page);
 	}
 
+	@RequestMapping(value="/News/{news_id}/comments",method=RequestMethod.POST)
+	public NewsComment postNewsComment(
+			@PathVariable int news_id,
+			@RequestParam String text,
+			HttpServletRequest request){
+		User me = getCurrentUser(request);
+		News news = newsService.findOne(news_id);
+		NewsComment newsComment = new NewsComment();
+		newsComment.setAuthor(me);
+		newsComment.setNews(news);
+		newsComment.setText(text);
+		return newsCommentService.save(newsComment);
+	}
 }
