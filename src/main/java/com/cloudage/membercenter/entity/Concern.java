@@ -7,7 +7,9 @@ import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.PrePersist;
 
@@ -20,7 +22,7 @@ public class Concern {
 		User user;
 		User news_author;
 
-		@ManyToOne(optional = false)
+		@ManyToOne(optional= false)
 		public User getUser() {
 			return user;
 		}
@@ -30,7 +32,7 @@ public class Concern {
 		}
 
 
-		@ManyToOne(optional = false)
+		@ManyToOne(optional=false)
 		public User getNews_author() {
 			return news_author;
 		}

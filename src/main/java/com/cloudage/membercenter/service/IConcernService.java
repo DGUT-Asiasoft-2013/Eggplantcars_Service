@@ -1,5 +1,8 @@
 package com.cloudage.membercenter.service;
 
+import java.util.List;
+
+import com.cloudage.membercenter.entity.Concern;
 import com.cloudage.membercenter.entity.User;
 
 public interface IConcernService {
@@ -10,4 +13,5 @@ public interface IConcernService {
 
 	boolean checkConcerned(int userId, int newsauthorId);
 
+	List<Concern> getConcernsByUserId(int userId);
 }

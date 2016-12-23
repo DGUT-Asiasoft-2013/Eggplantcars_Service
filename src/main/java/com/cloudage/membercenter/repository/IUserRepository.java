@@ -10,12 +10,14 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 @Repository
 public interface IUserRepository extends PagingAndSortingRepository<User, Integer>{
 
-	@Query("from User u where u.account = ?1")
+	@Query("from User user where user.account = ?1")
 	User findUserByAccount(String account);
 	
-	@Query("from User u where u.id = ?1 and u.passwordHash = ?1")
+	@Query("from User user where user.id = ?1 and user.passwordHash = ?2")
 	User findUserByPasswordHash(Integer userId,String passwordHash);
 	
-	@Query("from User u where u.email = ?1")
+	@Query("from User user where user.email = ?1")
 	User findUserByEmail(String email);
+	
+	
 }
