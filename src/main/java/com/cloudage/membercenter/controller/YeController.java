@@ -130,4 +130,12 @@ public class YeController {
 		User me = getCurrentUser(request);
 		return concernService.getConcernsByUserId(me.getId());
 	}
+
+	//显示当前用户发出新闻
+	@RequestMapping("/{news_author_id}/News")
+	public List<News> getConcernsByUserId(
+			@PathVariable int news_author_id,
+			HttpServletRequest request){
+		return newsService.findAllByAuthorId(news_author_id);
+	}
 }
