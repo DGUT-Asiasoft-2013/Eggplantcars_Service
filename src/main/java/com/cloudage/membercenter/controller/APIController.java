@@ -2,7 +2,6 @@ package com.cloudage.membercenter.controller;
 
 import java.io.File;
 
-import javax.print.attribute.standard.Media;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
@@ -22,6 +21,7 @@ import com.cloudage.membercenter.entity.Comment;
 import com.cloudage.membercenter.entity.Deal;
 import com.cloudage.membercenter.entity.History;
 import com.cloudage.membercenter.entity.News;
+import com.cloudage.membercenter.entity.PrivateLatter;
 import com.cloudage.membercenter.entity.NewsComment;
 import com.cloudage.membercenter.entity.User;
 import com.cloudage.membercenter.service.IArticleService;
@@ -31,6 +31,7 @@ import com.cloudage.membercenter.service.IHistoryService;
 import com.cloudage.membercenter.service.ILikesService;
 import com.cloudage.membercenter.service.INewsCommentService;
 import com.cloudage.membercenter.service.INewsService;
+import com.cloudage.membercenter.service.IPrivateLatterService;
 import com.cloudage.membercenter.service.IUserService;
 import org.apache.commons.io.FileUtils;
 import org.junit.runner.Request;
@@ -50,9 +51,12 @@ public class APIController {
 	@Autowired
 	INewsService newsService;
 	@Autowired
+	IPrivateLatterService latterService;
+	@Autowired
 	IHistoryService historyService;
 	@Autowired
 	INewsCommentService newsCommentService;
+
 
 
 	@RequestMapping(value = "/hello", method=RequestMethod.GET)
@@ -171,6 +175,12 @@ public class APIController {
 	@RequestMapping(value="/feeds",method=RequestMethod.GET)
 	public Page<Article> getFeeds(){
 		return getFeeds(0);
+	}
+	
+	//获取所有用户
+	@RequestMapping(value="/alluser",method=RequestMethod.GET)
+	public Page<User> getAllUser(){
+		return userService.getAllUser(0);
 	}
 
 
@@ -345,6 +355,53 @@ public class APIController {
 			){
 		return dealService.searchTextByKeyword(keyword,page);
 	}
+	
+	
+	//发送私信
+	@RequestMapping(value="/privateLatter",method=RequestMethod.POST)
+	public PrivateLatter savePrivateLatter(
+			@RequestParam String text,
+			@RequestParam String latterType,
+			@RequestParam String receiverAccount,
+			HttpServletRequest request ){
+		
+		//User currentUser=getCurrentUser(request);
+		//通过 别人的Account(账号)给他发送私信
+		User me = getCurrentUser(request);
+		User receiver = userService.findByAccount(receiverAccount);
+		PrivateLatter latter = new PrivateLatter();
+		latter.setSender(me);
+		latter.setReceiver(receiver);
+		latter.setSendtype(latterType);
+		latter.setLatterText(text);
+		return latterService.save(latter);
+	}
+	
+	//接受私信(当前登录用户为接收者)
+	@RequestMapping(value="/getprivateLatter/{receiverId}")
+	public Page<PrivateLatter> getLatter(
+			@PathVariable int receiverId,
+			@RequestParam (defaultValue="0") int page,
+			HttpServletRequest request){
+		User me = getCurrentUser(request);
+		return latterService.findPrivateLetterByReveiverId(receiverId, me.getId(), page);
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 
 
 	@RequestMapping(value="/history",method=RequestMethod.POST)
@@ -387,5 +444,17 @@ public class APIController {
 		newsComment.setNews(news);
 		newsComment.setText(text);
 		return newsCommentService.save(newsComment);
+	}
+	
+	@RequestMapping("/News/{news_id}/comments/{page}")//分页
+	public Page<NewsComment> getNewsCommentsOfNews(
+			@PathVariable int news_id,
+			@PathVariable int page){
+		return newsCommentService.findNewsCommentsOfNews(news_id, page); 
+	}
+	@RequestMapping("/News/{news_id}/comments")//基本方法
+	public Page<NewsComment> getNewsCommentsOfNews(
+			@PathVariable int news_id){
+		return newsCommentService.findNewsCommentsOfNews(news_id, 0);
 	}
 }
