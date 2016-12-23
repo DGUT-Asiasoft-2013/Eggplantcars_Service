@@ -388,4 +388,16 @@ public class APIController {
 		newsComment.setText(text);
 		return newsCommentService.save(newsComment);
 	}
+	
+	@RequestMapping("/News/{news_id}/comments/{page}")//分页
+	public Page<NewsComment> getNewsCommentsOfNews(
+			@PathVariable int news_id,
+			@PathVariable int page){
+		return newsCommentService.findNewsCommentsOfNews(news_id, page); 
+	}
+	@RequestMapping("/News/{news_id}/comments")//基本方法
+	public Page<NewsComment> getNewsCommentsOfNews(
+			@PathVariable int news_id){
+		return newsCommentService.findNewsCommentsOfNews(news_id, 0);
+	}
 }

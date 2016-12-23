@@ -3,6 +3,7 @@ package com.cloudage.membercenter.entity;
 import java.io.Serializable;
 import java.util.Date;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.persistence.EmbeddedId;
@@ -18,7 +19,7 @@ public class Likes {
 		User user;
 		News news;
 
-		@ManyToOne(optional = false)
+		@ManyToOne(optional = false,cascade=CascadeType.ALL)
 		public User getUser() {
 			return user;
 		}
