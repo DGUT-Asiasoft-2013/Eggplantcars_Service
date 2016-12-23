@@ -2,7 +2,6 @@ package com.cloudage.membercenter.controller;
 
 import java.io.File;
 
-import javax.print.attribute.standard.Media;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
@@ -20,14 +19,17 @@ import com.cloudage.membercenter.entity.Article;
 import com.cloudage.membercenter.entity.Comment;
 
 import com.cloudage.membercenter.entity.Deal;
-
+import com.cloudage.membercenter.entity.History;
 import com.cloudage.membercenter.entity.News;
 import com.cloudage.membercenter.entity.PrivateLatter;
+import com.cloudage.membercenter.entity.NewsComment;
 import com.cloudage.membercenter.entity.User;
 import com.cloudage.membercenter.service.IArticleService;
 import com.cloudage.membercenter.service.ICommentService;
 import com.cloudage.membercenter.service.IDealService;
+import com.cloudage.membercenter.service.IHistoryService;
 import com.cloudage.membercenter.service.ILikesService;
+import com.cloudage.membercenter.service.INewsCommentService;
 import com.cloudage.membercenter.service.INewsService;
 import com.cloudage.membercenter.service.IPrivateLatterService;
 import com.cloudage.membercenter.service.IUserService;
@@ -50,6 +52,11 @@ public class APIController {
 	INewsService newsService;
 	@Autowired
 	IPrivateLatterService latterService;
+	@Autowired
+	IHistoryService historyService;
+	@Autowired
+	INewsCommentService newsCommentService;
+
 
 
 	@RequestMapping(value = "/hello", method=RequestMethod.GET)
@@ -396,4 +403,46 @@ public class APIController {
 	
 	
 
+
+	@RequestMapping(value="/history",method=RequestMethod.POST)
+	public History addHistory(
+			@RequestParam String text,
+			HttpServletRequest request){
+		User currentUser=getCurrentUser(request);
+		History history=new History();
+		history.setAuthor(currentUser);
+		history.setText(text);
+		return historyService.save(history);
+	}
+	
+	@RequestMapping(value="/historyitems/{page}",method=RequestMethod.GET)
+	public Page<History> getHistoryItems(@PathVariable int page){
+		return historyService.getHistoryItems(page);
+	}
+	
+	@RequestMapping(value="/historyitems",method=RequestMethod.GET)
+	public Page<History> getHistoryItems(){
+		return getHistoryItems(0);
+	}
+	@RequestMapping("/delecthistory")
+	public void  delectHistory(
+			HttpServletRequest request){
+		User currentUser = getCurrentUser(request);
+		int author_id = currentUser.getId();
+		historyService.delectAllOfHistory(author_id);
+		}
+		
+	@RequestMapping(value="/News/{news_id}/comments",method=RequestMethod.POST)
+	public NewsComment postNewsComment(
+			@PathVariable int news_id,
+			@RequestParam String text,
+			HttpServletRequest request){
+		User me = getCurrentUser(request);
+		News news = newsService.findOne(news_id);
+		NewsComment newsComment = new NewsComment();
+		newsComment.setAuthor(me);
+		newsComment.setNews(news);
+		newsComment.setText(text);
+		return newsCommentService.save(newsComment);
+	}
 }

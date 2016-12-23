@@ -1,5 +1,7 @@
 package com.cloudage.membercenter.controller;
 
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
@@ -11,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.cloudage.membercenter.entity.Article;
+import com.cloudage.membercenter.entity.Concern;
 import com.cloudage.membercenter.entity.News;
 import com.cloudage.membercenter.entity.User;
 import com.cloudage.membercenter.service.IConcernService;
@@ -119,5 +121,21 @@ public class YeController {
 			userService.save(user);
 			return true;
 		}
+	}
+
+	//显示当前用户关注ID
+	@RequestMapping("/Concerns/getMyConcerns")
+	public List<Concern> getConcernsByUserId(
+			HttpServletRequest request){
+		User me = getCurrentUser(request);
+		return concernService.getConcernsByUserId(me.getId());
+	}
+
+	//显示当前用户发出新闻
+	@RequestMapping("/{news_author_id}/News")
+	public List<News> getConcernsByUserId(
+			@PathVariable int news_author_id,
+			HttpServletRequest request){
+		return newsService.findAllByAuthorId(news_author_id);
 	}
 }
