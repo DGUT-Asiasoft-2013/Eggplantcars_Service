@@ -34,6 +34,22 @@ public class DefaultNewsCommentServie implements INewsCommentService{
 		PageRequest pageRequest=new PageRequest(page, 3,sort);
 		return newsCommentRepo.findAllOfArticleId(news_id, pageRequest);
 	}
+
+	@Override
+	public Page<NewsComment> findAllOfMyNewsComment(int author_id, int page) {
+		// TODO Auto-generated method stub
+		Sort sort = new Sort(Direction.DESC,"createDate");
+		PageRequest pageRequest = new PageRequest(page, 5,sort);
+		return newsCommentRepo.findAllOfArticleAuthorId(author_id, pageRequest);
+	}
+
+	@Override
+	public Page<NewsComment> findNewsCommentsOfAuthor(int author_id, int page) {
+		// TODO Auto-generated method stub
+		Sort sort = new Sort(Direction.DESC,"createDate");
+		PageRequest pageRequest = new PageRequest(page, 5,sort);
+		return newsCommentRepo.findAllMyComment(author_id, pageRequest);
+	}
 	
 
 }

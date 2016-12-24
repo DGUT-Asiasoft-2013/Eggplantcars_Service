@@ -10,4 +10,8 @@ public interface INewsCommentService {
 
 	Page<NewsComment> findNewsCommentsOfNews(int news_id, int page);
 
+	Page<NewsComment> findAllOfMyNewsComment(int author_id, int page);
+
+	Page<NewsComment> findNewsCommentsOfAuthor(int author_id, int page);
+
 }

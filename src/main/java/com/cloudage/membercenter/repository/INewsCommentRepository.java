@@ -12,5 +12,9 @@ public interface INewsCommentRepository extends PagingAndSortingRepository<NewsC
 
 	@Query("from NewsComment newsComment where newsComment.news.id = ?1")
 	Page<NewsComment> findAllOfArticleId(int news_id, Pageable pageRequest);
+	@Query("from NewsComment newsComment where newsComment.author.id=?1")
+	Page<NewsComment> findAllMyComment(int author_id, Pageable pageRequest);
+	@Query("from NewsComment newsComment where newsComment.news.author.id=?1")
+	Page<NewsComment> findAllOfArticleAuthorId(int author_id, Pageable pageRequest);
 
 }

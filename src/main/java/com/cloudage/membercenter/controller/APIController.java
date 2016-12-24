@@ -457,4 +457,36 @@ public class APIController {
 			@PathVariable int news_id){
 		return newsCommentService.findNewsCommentsOfNews(news_id, 0);
 	}
+	
+	@RequestMapping("/news/author_id/receivedcomment")//显示所有对某人的评论
+	public Page<NewsComment> getNewsCommentsOfAuthor(
+			HttpServletRequest request){
+		User currentUser = getCurrentUser(request);
+		int author_id = currentUser.getId();
+		return newsCommentService.findNewsCommentsOfAuthor(author_id, 0);
+	}
+	@RequestMapping("/news/author_id/receivedcomment/{page}")//分页
+	public Page<NewsComment> getNewsCommentsOfAuthor(
+			HttpServletRequest request,
+			@PathVariable int page){
+		User currentUser = getCurrentUser(request);
+		int author_id = currentUser.getId();
+		return newsCommentService.findNewsCommentsOfAuthor(author_id, page);
+	}
+
+	@RequestMapping("/news/author_id/mycomments") //所有登陆用户发表过的评论
+	public Page<NewsComment> getNewsCommentsOfMe(
+			HttpServletRequest request){
+		User currentUser = getCurrentUser(request);
+		int author_id = currentUser.getId();
+		return newsCommentService.findAllOfMyNewsComment(author_id, 0);
+	}
+	@RequestMapping("/news/author_id/mycomments/{page}")
+	public Page<NewsComment> getNewsCommentsOfMe(
+			HttpServletRequest request,
+			@PathVariable int page){
+		User currentUser= getCurrentUser(request);
+		int author_id = currentUser.getId();
+		return newsCommentService.findAllOfMyNewsComment(author_id, page);
+	}
 }
