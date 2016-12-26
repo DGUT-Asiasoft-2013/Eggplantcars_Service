@@ -21,7 +21,10 @@ public class Deal extends BaseEntity {
 	String title;
 	String text;
 
+	String getSellerId;
 	String getSellerName;
+	String getSellerAccount;
+	String getSellerAvatar;
     String dealAvatar;
     String carModel;
     String travelDistance;
@@ -38,11 +41,18 @@ public class Deal extends BaseEntity {
 		this.seller = seller;
 	}
 	@Transient
+	public Integer getSellerId(){
+		return seller.getId();
+	}
+	@Transient
 	public String getSellerName(){
 		return seller.name;
 	}
 	@Transient
-	@JsonIgnore
+	public String getSellerAccount(){
+		return seller.account;
+	}
+	@Transient
 	public String getSellerAvatar(){
 		return seller.avatar;
 	}
