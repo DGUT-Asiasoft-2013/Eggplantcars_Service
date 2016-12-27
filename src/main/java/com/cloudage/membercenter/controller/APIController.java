@@ -23,6 +23,7 @@ import com.cloudage.membercenter.entity.Deal;
 import com.cloudage.membercenter.entity.History;
 import com.cloudage.membercenter.entity.News;
 import com.cloudage.membercenter.entity.PrivateLatter;
+import com.cloudage.membercenter.entity.ShoppingCar;
 import com.cloudage.membercenter.entity.NewsComment;
 import com.cloudage.membercenter.entity.User;
 import com.cloudage.membercenter.service.IArticleService;
@@ -33,6 +34,7 @@ import com.cloudage.membercenter.service.ILikesService;
 import com.cloudage.membercenter.service.INewsCommentService;
 import com.cloudage.membercenter.service.INewsService;
 import com.cloudage.membercenter.service.IPrivateLatterService;
+import com.cloudage.membercenter.service.IShoppingCarService;
 import com.cloudage.membercenter.service.IUserService;
 import org.apache.commons.io.FileUtils;
 import org.junit.runner.Request;
@@ -58,7 +60,8 @@ public class APIController {
 	IHistoryService historyService;
 	@Autowired
 	INewsCommentService newsCommentService;
-
+	@Autowired
+	IShoppingCarService shoppingCarService;
 
 
 
@@ -493,6 +496,41 @@ public class APIController {
 		return newsCommentService.findAllOfMyNewsComment(author_id, page);
 	}
 	
+
+	@RequestMapping("deal/{deal_id}/shoppingcar")
+	public void addShoppingCar(
+			@PathVariable int deal_id,
+			HttpServletRequest request){
+		User currentUser=getCurrentUser(request);
+		Deal deal=dealService.findById(deal_id);
+		shoppingCarService.addShoppingCar(deal,currentUser);
+	}
+	
+	@RequestMapping("/myshoppingcar")
+	public Page<ShoppingCar> getMyShoppingCar(
+			HttpServletRequest request){
+		User currentUser = getCurrentUser(request);
+		int buyer_id = currentUser.getId();
+		return shoppingCarService.findMyShoppingCar(buyer_id, 0);
+	}
+	@RequestMapping("/myshoppingcar/{page}")//·ÖÒ³
+	public Page<ShoppingCar> getMyShoppingCar(
+			HttpServletRequest request,
+			@PathVariable int page){
+		User currentUser = getCurrentUser(request);
+		int buyer_id = currentUser.getId();
+		return shoppingCarService.findMyShoppingCar(buyer_id, page);
+	}
+	
+	@RequestMapping("/myshoppingcar/{deal_id}/delect")
+	public void  delectMyShoppingCar(
+			@PathVariable int deal_id,
+			HttpServletRequest request){
+		User currentUser = getCurrentUser(request);
+		int buyer_id = currentUser.getId();
+		shoppingCarService.delectMyShoppingCar(deal_id,buyer_id);
+		}
+
 	
 	
 	
@@ -516,4 +554,5 @@ public class APIController {
 		int senderId = Integer.parseInt(senderIdString);
 		latterService.updateUnread(meId, senderId);
 	} 
+
 }
