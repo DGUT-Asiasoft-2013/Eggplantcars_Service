@@ -39,5 +39,10 @@ public class DefaultDealService implements IDealService{
 		PageRequest pageRequest = new PageRequest(page, 5, sort);
 		return dealRepo.searchTextWithKeyword(keyword, pageRequest);
 	}
+	@Override
+	public Deal findById(int deal_id) {
+		// TODO Auto-generated method stub
+		return dealRepo.findOne(deal_id);
+	}
 
 }

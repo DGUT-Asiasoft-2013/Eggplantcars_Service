@@ -8,5 +8,6 @@ public interface IDealService {
 	Deal save(Deal deal);
 	Page<Deal> getDealItems(int page);
 	Page<Deal> searchTextByKeyword(String keyword, int page);
+	Deal findById(int deal_id);
 
 }

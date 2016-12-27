@@ -11,6 +11,7 @@ import javax.persistence.PrePersist;
 
 
 import com.cloudage.membercenter.util.BaseEntity;
+import com.mchange.v2.c3p0.test.OneThreadRepeatedInsertOrQueryTest;
 
 @Entity
 public class PrivateLatter extends BaseEntity{
@@ -20,6 +21,7 @@ public class PrivateLatter extends BaseEntity{
 	String sendtype; //消息类型 send 或者 receive
 	String latterText; // 私信内容
 	Date createDate; // 发送时间
+	boolean unread; //判断是否已读
 
 	
 	@ManyToOne(optional=false)
@@ -65,9 +67,19 @@ public class PrivateLatter extends BaseEntity{
 		this.createDate = createDate;
 	}
 
+	
+	public boolean isUnread() {
+		return unread;
+	}
+
+	public void setUnread(boolean unread) {
+		this.unread = unread;
+	}
+
 	@PrePersist
 	void onPreRersist() {
 		createDate = new Date();
+		unread = true;
 	}
 
 }

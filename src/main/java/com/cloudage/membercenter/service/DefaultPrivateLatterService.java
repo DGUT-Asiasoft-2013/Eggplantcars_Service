@@ -1,5 +1,7 @@
 package com.cloudage.membercenter.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -32,6 +34,22 @@ public class DefaultPrivateLatterService implements IPrivateLatterService{
 		PageRequest pageRequest = new PageRequest(page, 100, sort);
 		return latterRepo.findPrivateLatterByReceiverId(receiverId, senderId, pageRequest);
 	}
+
+	
+
+	@Override
+	public int countUnreadMessages(int receiverId, int senderId) {
+		// TODO Auto-generated method stub
+		return latterRepo.countUnreadMessages(receiverId, senderId);
+	}
+
+	@Override
+	public void updateUnread(int receiverId, int senderId) {
+		
+		latterRepo.updateUnread(receiverId, senderId);
+	}
+
+	
 
 	
 
