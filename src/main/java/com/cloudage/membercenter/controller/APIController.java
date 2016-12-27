@@ -1,6 +1,7 @@
 package com.cloudage.membercenter.controller;
 
 import java.io.File;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -35,6 +36,7 @@ import com.cloudage.membercenter.service.IPrivateLatterService;
 import com.cloudage.membercenter.service.IUserService;
 import org.apache.commons.io.FileUtils;
 import org.junit.runner.Request;
+
 @RestController
 @RequestMapping("/api")
 public class APIController {
@@ -56,6 +58,7 @@ public class APIController {
 	IHistoryService historyService;
 	@Autowired
 	INewsCommentService newsCommentService;
+
 
 
 
@@ -489,4 +492,28 @@ public class APIController {
 		int author_id = currentUser.getId();
 		return newsCommentService.findAllOfMyNewsComment(author_id, page);
 	}
+	
+	
+	
+	
+	//或许未读消息条数  get
+	@RequestMapping("/unread/{senderId}")
+	public int countUnreadMessage(
+			@PathVariable int senderId,
+			HttpServletRequest request){
+		User me= getCurrentUser(request);
+		int meId = me.getId();
+		return latterService.countUnreadMessages(meId, senderId);
+	}
+	
+	//修改未读消息为已读    post
+	@RequestMapping(value="/unread/update",method=RequestMethod.POST)
+	public void updateUnread(
+			@RequestParam String senderIdString,
+			HttpServletRequest request){
+		User me = getCurrentUser(request);
+		int meId = me.getId();	
+		int senderId = Integer.parseInt(senderIdString);
+		latterService.updateUnread(meId, senderId);
+	} 
 }
