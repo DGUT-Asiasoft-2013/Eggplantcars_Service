@@ -1,10 +1,12 @@
 package com.cloudage.membercenter.controller;
 
+import java.io.File;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -12,12 +14,16 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.cloudage.membercenter.entity.Concern;
+import com.cloudage.membercenter.entity.Money;
 import com.cloudage.membercenter.entity.News;
 import com.cloudage.membercenter.entity.User;
+import com.cloudage.membercenter.repository.IMoneyRepository;
 import com.cloudage.membercenter.service.IConcernService;
 import com.cloudage.membercenter.service.ILikesService;
+import com.cloudage.membercenter.service.IMoneyService;
 import com.cloudage.membercenter.service.INewsService;
 import com.cloudage.membercenter.service.IUserService;
 
@@ -37,6 +43,9 @@ public class YeController {
 
 	@Autowired
 	IConcernService concernService;
+
+	@Autowired
+	IMoneyService moneyService;
 
 
 	@RequestMapping(value = "/hi", method=RequestMethod.GET)
@@ -106,6 +115,46 @@ public class YeController {
 		return likesService.countLikes(news_id);
 	} 
 
+	//显示当前用户关注ID
+	@RequestMapping("/Concerns/getMyConcerns")
+	public List<Concern> getConcernsByUserId(
+			HttpServletRequest request){
+		User me = getCurrentUser(request);
+		return concernService.getConcernsByUserId(me.getId());
+	}
+
+	//显示当前用户发出新闻
+	@RequestMapping("/{news_author_id}/News")
+	public List<News> getConcernsByUserId(
+			@PathVariable int news_author_id){
+		return newsService.findAllByAuthorId(news_author_id);
+	}
+
+	@RequestMapping("/{user_id}/isMoneyed")
+	public boolean checkMoneyed(
+			@PathVariable int user_id){
+		return moneyService.checkMoneyed(user_id);
+	}
+
+	@RequestMapping(value="/creatMoneyUser", method=RequestMethod.POST)
+	public Money register(
+			@RequestParam int cash,
+			HttpServletRequest request){
+		User me = getCurrentUser(request);
+		Money money = new Money();
+		money.setUser(me);
+		money.setCash(cash);
+
+		return moneyService.save(money);
+	}
+
+	//获取当前用户钱包的数据
+	@RequestMapping(value="/{user_id}/Moneys",method=RequestMethod.GET)
+	public Money getMoneysByUserId(
+			@PathVariable int user_id){
+		return moneyService.getMoneyByUserId(user_id);
+	}
+
 	//修改密码
 	@RequestMapping(value="/passwordchange",method=RequestMethod.POST)
 	public boolean repassword(
@@ -123,19 +172,21 @@ public class YeController {
 		}
 	}
 
-	//显示当前用户关注ID
-	@RequestMapping("/Concerns/getMyConcerns")
-	public List<Concern> getConcernsByUserId(
+	//充值
+	@RequestMapping(value="/CashDeposit",method=RequestMethod.POST)
+	public boolean csahdeposit(
+			@RequestParam int cash,
+			@RequestParam String password,
 			HttpServletRequest request){
 		User me = getCurrentUser(request);
-		return concernService.getConcernsByUserId(me.getId());
-	}
-
-	//显示当前用户发出新闻
-	@RequestMapping("/{news_author_id}/News")
-	public List<News> getConcernsByUserId(
-			@PathVariable int news_author_id,
-			HttpServletRequest request){
-		return newsService.findAllByAuthorId(news_author_id);
+		User user =userService.findByPasswordHash(me.getId(),password);
+		Money money = moneyService.getMoneyByUserId(me.getId());
+		if (money==null || user == null) {
+			return false;
+		}else{
+			money.setCash(cash);
+			moneyService.save(money);
+			return true;
+		}
 	}
 }
