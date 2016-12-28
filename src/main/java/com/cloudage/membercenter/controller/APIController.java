@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.cloudage.membercenter.entity.Address;
 import com.cloudage.membercenter.entity.Article;
 import com.cloudage.membercenter.entity.Comment;
 
@@ -26,6 +27,7 @@ import com.cloudage.membercenter.entity.PrivateLatter;
 import com.cloudage.membercenter.entity.ShoppingCar;
 import com.cloudage.membercenter.entity.NewsComment;
 import com.cloudage.membercenter.entity.User;
+import com.cloudage.membercenter.service.IAddressService;
 import com.cloudage.membercenter.service.IArticleService;
 import com.cloudage.membercenter.service.ICommentService;
 import com.cloudage.membercenter.service.IDealService;
@@ -62,6 +64,8 @@ public class APIController {
 	INewsCommentService newsCommentService;
 	@Autowired
 	IShoppingCarService shoppingCarService;
+	@Autowired
+	IAddressService addressService;
 
 
 
@@ -531,7 +535,26 @@ public class APIController {
 		shoppingCarService.delectMyShoppingCar(deal_id,buyer_id);
 		}
 
-	
+	@RequestMapping(value="/setaddress",method=RequestMethod.POST)
+	public Address setAddress(
+			@RequestParam String text,
+			HttpServletRequest request
+			){
+		User user = getCurrentUser(request);
+		Address address = new Address();
+		address.setUser(user);
+		address.setText(text);
+		return addressService.save(address);
+	}
+	@RequestMapping("/getaddress")
+	public Page<Address> getAddress(
+			@PathVariable int userId,
+			@RequestParam(defaultValue="0") int page,
+			HttpServletRequest request){
+		User me = getCurrentUser(request);
+		int meId = me.getId();
+		return addressService.findAddressOfUser(meId, page);
+	}
 	
 	
 	//或许未读消息条数  get
