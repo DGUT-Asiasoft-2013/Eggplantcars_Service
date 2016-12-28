@@ -538,12 +538,16 @@ public class APIController {
 	@RequestMapping(value="/setaddress",method=RequestMethod.POST)
 	public Address setAddress(
 			@RequestParam String text,
+			@RequestParam String name,
+			@RequestParam String phoneNumber,
 			HttpServletRequest request
 			){
 		User user = getCurrentUser(request);
 		Address address = new Address();
 		address.setUser(user);
 		address.setText(text);
+		address.setName(name);
+		address.setPhoneNamber(phoneNumber);
 		return addressService.save(address);
 	}
 	@RequestMapping("/getaddress")

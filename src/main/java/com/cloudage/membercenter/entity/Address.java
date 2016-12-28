@@ -17,7 +17,9 @@ public class Address extends BaseEntity {
 
 	User user;
 	Date createDate;
-	String text;
+	String text;   //地址
+	String name;	//收件人名字
+	String phoneNumber; //电话号码
 	@ManyToOne(optional = false)
 	@JsonIgnore
 	public User getUser() {
@@ -49,6 +51,19 @@ public class Address extends BaseEntity {
 		this.text = text;
 	}
 	
+	@Column(nullable=false)
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
+	public String getPhoneNamber() {
+		return phoneNumber;
+	}
+	public void setPhoneNamber(String phoneNamber) {
+		this.phoneNumber = phoneNamber;
+	}
 	@PrePersist
 	void onPrePersist() {
 		createDate = new Date();
