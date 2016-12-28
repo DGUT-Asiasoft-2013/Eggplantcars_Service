@@ -25,15 +25,7 @@ public class Address extends BaseEntity {
 	public User getUser() {
 		return user;
 	}
-	@Transient
-	public String getAuthorName(){
-		return user.name;
-	}
 	
-	@Transient
-	public String getAuthorAvatar(){
-		return user.avatar;
-	}
 	public void setUser(User user) {
 		this.user = user;
 	}
@@ -58,10 +50,10 @@ public class Address extends BaseEntity {
 	public void setName(String name) {
 		this.name = name;
 	}
-	public String getPhoneNamber() {
+	public String getPhoneNumber() {
 		return phoneNumber;
 	}
-	public void setPhoneNamber(String phoneNamber) {
+	public void setPhoneNumber(String phoneNamber) {
 		this.phoneNumber = phoneNamber;
 	}
 	@PrePersist

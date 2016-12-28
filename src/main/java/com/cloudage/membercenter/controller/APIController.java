@@ -535,6 +535,7 @@ public class APIController {
 		shoppingCarService.delectMyShoppingCar(deal_id,buyer_id);
 		}
 
+	//上传收货地址
 	@RequestMapping(value="/setaddress",method=RequestMethod.POST)
 	public Address setAddress(
 			@RequestParam String text,
@@ -547,12 +548,12 @@ public class APIController {
 		address.setUser(user);
 		address.setText(text);
 		address.setName(name);
-		address.setPhoneNamber(phoneNumber);
+		address.setPhoneNumber(phoneNumber);
 		return addressService.save(address);
 	}
+	//获取收获地址
 	@RequestMapping("/getaddress")
 	public Page<Address> getAddress(
-			@PathVariable int userId,
 			@RequestParam(defaultValue="0") int page,
 			HttpServletRequest request){
 		User me = getCurrentUser(request);
