@@ -584,6 +584,13 @@ public class APIController {
 		int meId = me.getId();
 		return addressService.findAddressOfUser(meId, page);
 	}
+	@RequestMapping("/getlastaddress")
+	public Address getlastAddress(
+			HttpServletRequest request){
+		User me = getCurrentUser(request);
+		int meId = me.getId();
+		return addressService.findLastAddressOfUser(meId);
+	}
 	
 	
 	//或许未读消息条数  get
