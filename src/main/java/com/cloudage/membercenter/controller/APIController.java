@@ -399,12 +399,36 @@ public class APIController {
 	
 	
 	
+	//收货地址删除
+	@RequestMapping(value="/address/del",method=RequestMethod.POST)
+	public Page<Address> delAddress(
+			@RequestParam String addressIdString,
+			@RequestParam (defaultValue = "0") int page,
+			HttpServletRequest request){
+		User me = getCurrentUser(request);
+		int addressId = Integer.parseInt(addressIdString);
+		int meId = me.getId();
+		addressService.delectAddressById(addressId);
+		return addressService.findAddressOfUser(meId, page);
+	}
 	
 	
 	
-	
-	
-	
+	//编辑收货地址
+	@RequestMapping(value="/address/update",method=RequestMethod.POST)
+	public Address addressUpdate(
+			@RequestParam String addressIdString,
+			@RequestParam String text,
+			@RequestParam String name,
+			@RequestParam String phoneNumber,
+			HttpServletRequest request){
+		int addressId = Integer.parseInt(addressIdString);
+		Address address = addressService.findAddressById(addressId);
+		address.setText(text);
+		address.setName(name);
+		address.setPhoneNumber(phoneNumber);
+		return addressService.save(address);
+	}
 	
 	
 	

@@ -37,4 +37,18 @@ public class DefaultAddressService implements IAddressService {
 		return addressRepo.findAddressByUserId(userId, pageRequest);
 	}
 
+
+	@Override
+	public void delectAddressById(int address_id) {
+		// TODO Auto-generated method stub
+		addressRepo.delectAddressById(address_id);
+	}
+
+
+	@Override
+	public Address findAddressById(int address_id) {
+		// TODO Auto-generated method stub
+		return addressRepo.findAddressById(address_id);
+	}
+
 }
