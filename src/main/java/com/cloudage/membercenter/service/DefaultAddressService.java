@@ -37,4 +37,12 @@ public class DefaultAddressService implements IAddressService {
 		return addressRepo.findAddressByUserId(userId, pageRequest);
 	}
 
+
+	@Override
+	public Address findLastAddressOfUser(int meId) {
+		Sort sort = new Sort(Direction.DESC, "createDate");
+		PageRequest page = new PageRequest(0, 1, sort);
+		return addressRepo.findAddressByUserId(meId, page).getContent().get(0);
+	}
+
 }

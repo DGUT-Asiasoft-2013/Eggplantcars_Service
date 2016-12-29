@@ -8,4 +8,5 @@ public interface IAddressService {
 
 	Page<Address> findAddressOfUser(int userId,int page);
 	Address save(Address address);
+	Address findLastAddressOfUser(int meId);
 }
