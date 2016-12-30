@@ -1,12 +1,10 @@
 package com.cloudage.membercenter.controller;
 
-import java.io.File;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
-import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,13 +12,12 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
-
 import com.cloudage.membercenter.entity.Concern;
 import com.cloudage.membercenter.entity.Money;
 import com.cloudage.membercenter.entity.News;
+import com.cloudage.membercenter.entity.Record;
 import com.cloudage.membercenter.entity.User;
-import com.cloudage.membercenter.repository.IMoneyRepository;
+import com.cloudage.membercenter.repository.IRecordRepository;
 import com.cloudage.membercenter.service.IConcernService;
 import com.cloudage.membercenter.service.ILikesService;
 import com.cloudage.membercenter.service.IMoneyService;
@@ -46,6 +43,9 @@ public class YeController {
 
 	@Autowired
 	IMoneyService moneyService;
+
+	@Autowired
+	IRecordRepository recordRepo;
 
 
 	@RequestMapping(value = "/hi", method=RequestMethod.GET)
@@ -189,4 +189,29 @@ public class YeController {
 			return true;
 		}
 	}
+
+	//保存消费记录
+	@RequestMapping(value="/recordsave",method=RequestMethod.POST)
+	public Record recordsave(
+			@RequestParam String record_type,
+			@RequestParam String text,
+			@RequestParam int my_cash,
+			@RequestParam int record_cash,
+			HttpServletRequest request){
+		User me = getCurrentUser(request);
+		Record record = new Record();
+		record.setUser(me);
+		record.setRecord_type(record_type);
+		record.setMy_cash(my_cash);
+		record.setText(text);
+		record.setRecord_cash(record_cash);
+		return recordRepo.save(record);
+	}
+	
+	//获取当前用户钱包的数据
+		@RequestMapping(value="/{user_id}/Records",method=RequestMethod.GET)
+		public List<Record> findAllByUserId(
+				@PathVariable int user_id){
+			return recordRepo.findAllByUserId(user_id);
+		}
 }
