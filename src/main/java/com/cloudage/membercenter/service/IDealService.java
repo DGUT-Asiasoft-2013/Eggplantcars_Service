@@ -9,5 +9,6 @@ public interface IDealService {
 	Page<Deal> getDealItems(int page);
 	Page<Deal> searchTextByKeyword(String keyword, int page);
 	Deal findById(int deal_id);
+	void delectDeal(int deal_id);
 
 }

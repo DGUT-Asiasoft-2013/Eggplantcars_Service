@@ -44,5 +44,10 @@ public class DefaultDealService implements IDealService{
 		// TODO Auto-generated method stub
 		return dealRepo.findOne(deal_id);
 	}
+	@Override
+	public void delectDeal(int deal_id) {
+		// TODO Auto-generated method stub
+		dealRepo.delectDeal(deal_id);
+	}
 
 }

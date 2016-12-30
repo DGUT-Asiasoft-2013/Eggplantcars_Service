@@ -26,6 +26,7 @@ import com.cloudage.membercenter.entity.News;
 import com.cloudage.membercenter.entity.PrivateLatter;
 import com.cloudage.membercenter.entity.ShoppingCar;
 import com.cloudage.membercenter.entity.NewsComment;
+import com.cloudage.membercenter.entity.OrderForm;
 import com.cloudage.membercenter.entity.User;
 import com.cloudage.membercenter.service.IAddressService;
 import com.cloudage.membercenter.service.IArticleService;
@@ -35,6 +36,7 @@ import com.cloudage.membercenter.service.IHistoryService;
 import com.cloudage.membercenter.service.ILikesService;
 import com.cloudage.membercenter.service.INewsCommentService;
 import com.cloudage.membercenter.service.INewsService;
+import com.cloudage.membercenter.service.IOrderFormService;
 import com.cloudage.membercenter.service.IPrivateLatterService;
 import com.cloudage.membercenter.service.IShoppingCarService;
 import com.cloudage.membercenter.service.IUserService;
@@ -66,6 +68,8 @@ public class APIController {
 	IShoppingCarService shoppingCarService;
 	@Autowired
 	IAddressService addressService;
+	@Autowired
+	IOrderFormService orderService;
 
 
 
@@ -186,7 +190,7 @@ public class APIController {
 	public Page<Article> getFeeds(){
 		return getFeeds(0);
 	}
-	
+
 	//获取所有用户
 	@RequestMapping(value="/alluser",method=RequestMethod.GET)
 	public Page<User> getAllUser(){
@@ -248,8 +252,8 @@ public class APIController {
 
 	//文章上传
 
-	
-	
+
+
 	//评论上传
 
 	@RequestMapping(value="/article/{article_id}/comments",method=RequestMethod.POST)
@@ -301,11 +305,11 @@ public class APIController {
 			@PathVariable int page){
 		return newsService.getNews(page);
 	}
-	
-	
-	
 
-//	a
+
+
+
+	//	a
 	//用户与文章共同组成主键
 	@RequestMapping("/article/s/{keyword}")
 	public Page<Article> searchArticlesWithKeyword(
@@ -347,17 +351,17 @@ public class APIController {
 
 		return dealService.save(deal);
 	}
-	
+
 	@RequestMapping(value="/dealitems/{page}",method=RequestMethod.GET)
 	public Page<Deal> getDealItems(@PathVariable int page){
 		return dealService.getDealItems(page);
 	}
-	
+
 	@RequestMapping(value="/dealitems",method=RequestMethod.GET)
 	public Page<Deal> getDealItems(){
 		return getDealItems(0);
 	}
-	
+
 	@RequestMapping("/deal/s/{keyword}")
 	public Page<Deal> searchDealByKeword(
 			@PathVariable String keyword,
@@ -365,8 +369,13 @@ public class APIController {
 			){
 		return dealService.searchTextByKeyword(keyword,page);
 	}
-	
-	
+	@RequestMapping("/deal/{deal_id}/delect")
+	public void  delectDeal(
+			@PathVariable int deal_id,
+			HttpServletRequest request){
+		dealService.delectDeal(deal_id);
+	}
+
 	//发送私信
 	@RequestMapping(value="/privateLatter",method=RequestMethod.POST)
 	public PrivateLatter savePrivateLatter(
@@ -374,7 +383,7 @@ public class APIController {
 			@RequestParam String latterType,
 			@RequestParam String receiverAccount,
 			HttpServletRequest request ){
-		
+
 		//User currentUser=getCurrentUser(request);
 		//通过 别人的Account(账号)给他发送私信
 		User me = getCurrentUser(request);
@@ -386,7 +395,7 @@ public class APIController {
 		latter.setLatterText(text);
 		return latterService.save(latter);
 	}
-	
+
 	//接受私信(当前登录用户为接收者)
 	@RequestMapping(value="/getprivateLatter/{receiverId}")
 	public Page<PrivateLatter> getLatter(
@@ -396,9 +405,9 @@ public class APIController {
 		User me = getCurrentUser(request);
 		return latterService.findPrivateLetterByReveiverId(receiverId, me.getId(), page);
 	}
-	
-	
-	
+
+
+
 	//收货地址删除
 	@RequestMapping(value="/address/del",method=RequestMethod.POST)
 	public Page<Address> delAddress(
@@ -411,9 +420,9 @@ public class APIController {
 		addressService.delectAddressById(addressId);
 		return addressService.findAddressOfUser(meId, page);
 	}
-	
-	
-	
+
+
+
 	//编辑收货地址
 	@RequestMapping(value="/address/update",method=RequestMethod.POST)
 	public Address addressUpdate(
@@ -429,13 +438,13 @@ public class APIController {
 		address.setPhoneNumber(phoneNumber);
 		return addressService.save(address);
 	}
-	
-	
-	
-	
-	
-	
-	
+
+
+
+
+
+
+
 
 
 	@RequestMapping(value="/history",method=RequestMethod.POST)
@@ -448,12 +457,12 @@ public class APIController {
 		history.setText(text);
 		return historyService.save(history);
 	}
-	
+
 	@RequestMapping(value="/historyitems/{page}",method=RequestMethod.GET)
 	public Page<History> getHistoryItems(@PathVariable int page){
 		return historyService.getHistoryItems(page);
 	}
-	
+
 	@RequestMapping(value="/historyitems",method=RequestMethod.GET)
 	public Page<History> getHistoryItems(){
 		return getHistoryItems(0);
@@ -464,8 +473,8 @@ public class APIController {
 		User currentUser = getCurrentUser(request);
 		int author_id = currentUser.getId();
 		historyService.delectAllOfHistory(author_id);
-		}
-		
+	}
+
 	@RequestMapping(value="/News/{news_id}/comments",method=RequestMethod.POST)
 	public NewsComment postNewsComment(
 			@PathVariable int news_id,
@@ -479,7 +488,7 @@ public class APIController {
 		newsComment.setText(text);
 		return newsCommentService.save(newsComment);
 	}
-	
+
 	@RequestMapping("/News/{news_id}/comments/{page}")//分页
 	public Page<NewsComment> getNewsCommentsOfNews(
 			@PathVariable int news_id,
@@ -491,7 +500,7 @@ public class APIController {
 			@PathVariable int news_id){
 		return newsCommentService.findNewsCommentsOfNews(news_id, 0);
 	}
-	
+
 	@RequestMapping("/news/author_id/receivedcomment")//显示所有对某人的评论
 	public Page<NewsComment> getNewsCommentsOfAuthor(
 			HttpServletRequest request){
@@ -523,7 +532,7 @@ public class APIController {
 		int author_id = currentUser.getId();
 		return newsCommentService.findAllOfMyNewsComment(author_id, page);
 	}
-	
+
 
 	@RequestMapping("deal/{deal_id}/shoppingcar")
 	public void addShoppingCar(
@@ -533,7 +542,7 @@ public class APIController {
 		Deal deal=dealService.findById(deal_id);
 		shoppingCarService.addShoppingCar(deal,currentUser);
 	}
-	
+
 	@RequestMapping("/myshoppingcar")
 	public Page<ShoppingCar> getMyShoppingCar(
 			HttpServletRequest request){
@@ -549,7 +558,7 @@ public class APIController {
 		int buyer_id = currentUser.getId();
 		return shoppingCarService.findMyShoppingCar(buyer_id, page);
 	}
-	
+
 	@RequestMapping("/myshoppingcar/{deal_id}/delect")
 	public void  delectMyShoppingCar(
 			@PathVariable int deal_id,
@@ -557,7 +566,7 @@ public class APIController {
 		User currentUser = getCurrentUser(request);
 		int buyer_id = currentUser.getId();
 		shoppingCarService.delectMyShoppingCar(deal_id,buyer_id);
-		}
+	}
 
 	//上传收货地址
 	@RequestMapping(value="/setaddress",method=RequestMethod.POST)
@@ -591,8 +600,8 @@ public class APIController {
 		int meId = me.getId();
 		return addressService.findLastAddressOfUser(meId);
 	}
-	
-	
+
+
 	//或许未读消息条数  get
 	@RequestMapping("/unread/{senderId}")
 	public int countUnreadMessage(
@@ -602,7 +611,7 @@ public class APIController {
 		int meId = me.getId();
 		return latterService.countUnreadMessages(meId, senderId);
 	}
-	
+
 	//修改未读消息为已读    post
 	@RequestMapping(value="/unread/update",method=RequestMethod.POST)
 	public void updateUnread(
@@ -614,4 +623,32 @@ public class APIController {
 		latterService.updateUnread(meId, senderId);
 	} 
 
+	@RequestMapping(value="/order", method=RequestMethod.POST)
+	public OrderForm addOrder(
+			@RequestParam String buyerName,
+			@RequestParam String buyerAddress,
+			@RequestParam String buyerPhone,
+			@RequestParam String orderTitle,
+			@RequestParam String orderCarModel,
+			@RequestParam String orderBuyDate,
+			@RequestParam String orderTravelDistance,
+			@RequestParam Integer orderPrice,
+			@RequestParam String orderText,
+			@RequestParam String orderAvatar,
+			HttpServletRequest request){
+		User currentUser=getCurrentUser(request);
+		OrderForm order = new OrderForm();
+		order.setBuyerName(buyerName);
+		order.setBuyerPhone(buyerPhone);
+		order.setBuyerAddress(buyerAddress);
+		order.setBuyer(currentUser);
+		order.setOrderTitle(orderTitle);
+		order.setOrderCarModel(orderCarModel);
+		order.setOrderBuyDate(orderBuyDate);
+		order.setOrderTravelDistance(orderTravelDistance);
+		order.setOrderPrice(orderPrice);
+		order.setOrderText(orderText);
+
+		return orderService.save(order);
+	}
 }
