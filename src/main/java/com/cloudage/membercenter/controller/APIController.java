@@ -651,4 +651,56 @@ public class APIController {
 
 		return orderService.save(order);
 	}
+
+	//ÐÞ¸ÄêÇ³Æ
+	@RequestMapping(value="/namechange",method=RequestMethod.POST)
+	public boolean namechange(
+			@RequestParam String name,
+			HttpServletRequest request){
+		User currentUser=getCurrentUser(request);
+		if (currentUser==null) {
+			return false;
+		}else{
+			currentUser.setName(name);
+			userService.save(currentUser);
+			return true;
+		}
+	}
+
+	//ÐÞ¸ÄÓÊÏä
+	@RequestMapping(value="/emailchange",method=RequestMethod.POST)
+	public boolean emailchange(
+			@RequestParam String email,
+			HttpServletRequest request){
+		User currentUser=getCurrentUser(request);
+		if (currentUser==null) {
+			return false;
+		}else{
+			currentUser.setEmail(email);
+			userService.save(currentUser);
+			return true;
+		}
+	}
+
+	//ÐÞ¸ÄÍ·Ïñ
+	@RequestMapping(value="/avatarchange",method=RequestMethod.POST)
+	public boolean avatarchange(
+			MultipartFile avatar,
+			HttpServletRequest request){
+		User currentUser=getCurrentUser(request);
+		if (currentUser==null) {
+			return false;
+		}else{
+			try {
+				String realPath=request.getSession().getServletContext().getRealPath("/WEB-INF/upload");
+				FileUtils.copyInputStreamToFile(avatar.getInputStream(), new File(realPath,currentUser.getAccount()+".png"));
+				currentUser.setAvatar("upload/"+currentUser.getAccount()+".png");
+				userService.save(currentUser);
+			} catch (Exception e) {
+				// TODO: handle exception
+				e.printStackTrace();
+			}
+			return true;
+		}
+	}
 }
