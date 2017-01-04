@@ -12,20 +12,28 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 public class OrderForm extends BaseEntity{
 	Date createDate;
 	User buyer;
-	
-	String buyerName;
-	String buyerAddress;
-	String buyerPhone;
-	String orderTitle;
-	String orderCarModel;
-	String orderBuyDate;
-	String orderTravelDistance;
-	Integer orderPrice;
-	String orderText;
-	String orderAvatar;
-	
+	Address address;
+	User seller;
+	Deal deal;
+	String type;// 订单的状态：接受，发货，收货
+
+
 	@ManyToOne(optional = false)
-	@JsonIgnore
+	public Address getAddress() {
+		return address;
+	}
+	public void setAddress(Address address) {
+		this.address = address;
+	}
+	@ManyToOne(optional = false)
+	public User getSeller() {
+		return seller;
+	}
+	public void setSeller(User seller) {
+		this.seller = seller;
+	}
+	@ManyToOne(optional = false)
+
 	public User getBuyer() {
 		return buyer;
 	}
@@ -38,70 +46,23 @@ public class OrderForm extends BaseEntity{
 	public void setCreateDate(Date createDate) {
 		this.createDate = createDate;
 	}
-	public String getBuyerName() {
-		return buyerName;
-	}
-	public void setBuyerName(String buyerName) {
-		this.buyerName = buyerName;
-	}
-	public String getBuyerAddress() {
-		return buyerAddress;
-	}
-	public void setBuyerAddress(String buyerAddress) {
-		this.buyerAddress = buyerAddress;
-	}
-	public String getBuyerPhone() {
-		return buyerPhone;
-	}
-	public void setBuyerPhone(String buyerPhone) {
-		this.buyerPhone = buyerPhone;
-	}
-
-
-	public String getOrderTitle() {
-		return orderTitle;
-	}
-	public void setOrderTitle(String orderTitle) {
-		this.orderTitle = orderTitle;
-	}
-	public String getOrderCarModel() {
-		return orderCarModel;
-	}
-	public void setOrderCarModel(String orderCarModel) {
-		this.orderCarModel = orderCarModel;
-	}
-	public String getOrderBuyDate() {
-		return orderBuyDate;
-	}
-	public void setOrderBuyDate(String orderBuyDate) {
-		this.orderBuyDate = orderBuyDate;
-	}
-	public String getOrderTravelDistance() {
-		return orderTravelDistance;
-	}
-	public void setOrderTravelDistance(String orderTravelDistance) {
-		this.orderTravelDistance = orderTravelDistance;
-	}
-	public Integer getOrderPrice() {
-		return orderPrice;
-	}
-	public void setOrderPrice(Integer orderPrice) {
-		this.orderPrice = orderPrice;
-	}
-	public String getOrderText() {
-		return orderText;
-	}
-	public void setOrderText(String orderText) {
-		this.orderText = orderText;
-	}
-	public String getOrderAvatar() {
-		return orderAvatar;
-	}
-	public void setOrderAvatar(String orderAvatar) {
-		this.orderAvatar = orderAvatar;
-	}
 	@PrePersist
 	void onPrePersist() {
 		createDate = new Date();
 	}
+	@ManyToOne(optional = false)
+	public Deal getDeal() {
+		return deal;
+	}
+	public void setDeal(Deal deal) {
+		this.deal = deal;
+	}
+	public String getType() {
+		return type;
+	}
+	public void setType(String type) {
+		this.type = type;
+	}
+
+
 }

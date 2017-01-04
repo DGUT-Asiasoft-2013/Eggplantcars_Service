@@ -12,16 +12,23 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.cloudage.membercenter.entity.Address;
 import com.cloudage.membercenter.entity.Concern;
+import com.cloudage.membercenter.entity.Deal;
 import com.cloudage.membercenter.entity.Money;
 import com.cloudage.membercenter.entity.News;
+import com.cloudage.membercenter.entity.OrderForm;
 import com.cloudage.membercenter.entity.Record;
 import com.cloudage.membercenter.entity.User;
 import com.cloudage.membercenter.repository.IRecordRepository;
+import com.cloudage.membercenter.service.IAddressService;
 import com.cloudage.membercenter.service.IConcernService;
+import com.cloudage.membercenter.service.IDealService;
 import com.cloudage.membercenter.service.ILikesService;
 import com.cloudage.membercenter.service.IMoneyService;
 import com.cloudage.membercenter.service.INewsService;
+import com.cloudage.membercenter.service.IOrderFormService;
 import com.cloudage.membercenter.service.IUserService;
 
 @RestController
@@ -42,10 +49,19 @@ public class YeController {
 	IConcernService concernService;
 
 	@Autowired
+	IDealService dealService;
+
+	@Autowired 
+	IAddressService addressService;
+
+	@Autowired
 	IMoneyService moneyService;
 
 	@Autowired
 	IRecordRepository recordRepo;
+
+	@Autowired
+	IOrderFormService orderService;
 
 
 	@RequestMapping(value = "/hi", method=RequestMethod.GET)
@@ -190,7 +206,27 @@ public class YeController {
 		}
 	}
 
-	//保存消费记录
+	//卖家收款
+	@RequestMapping(value="/CashOrder",method=RequestMethod.POST)
+	public boolean csahorder(
+			@RequestParam int cash,
+			@RequestParam int sellerid,
+			@RequestParam String password,
+			HttpServletRequest request){
+		User me = getCurrentUser(request);
+		User user =userService.findByPasswordHash(me.getId(),password);
+		User seller = userService.findById(sellerid);
+		Money money = moneyService.getMoneyByUserId(seller.getId());
+		if (money==null || user == null) {
+			return false;
+		}else{
+			money.setCash(cash);
+			moneyService.save(money);
+			return true;
+		}
+	}
+
+	//保存自己消费记录
 	@RequestMapping(value="/recordsave",method=RequestMethod.POST)
 	public Record recordsave(
 			@RequestParam String record_type,
@@ -207,11 +243,90 @@ public class YeController {
 		record.setRecord_cash(record_cash);
 		return recordRepo.save(record);
 	}
-	
+
+	//保存卖家消费记录
+	@RequestMapping(value="/sellerrecordsave",method=RequestMethod.POST)
+	public Record recordsave(
+			@RequestParam String record_type,
+			@RequestParam String text,
+			@RequestParam int my_cash,
+			@RequestParam int record_cash,
+			@RequestParam int sellerid){
+		User seller = userService.findById(sellerid);
+		Record record = new Record();
+		record.setUser(seller);
+		record.setRecord_type(record_type);
+		record.setMy_cash(my_cash);
+		record.setText(text);
+		record.setRecord_cash(record_cash);
+		return recordRepo.save(record);
+	}
+
+
 	//获取当前用户钱包的数据
-		@RequestMapping(value="/{user_id}/Records",method=RequestMethod.GET)
-		public List<Record> findAllByUserId(
-				@PathVariable int user_id){
-			return recordRepo.findAllByUserId(user_id);
+	@RequestMapping(value="/{user_id}/Records",method=RequestMethod.GET)
+	public List<Record> findAllByUserId(
+			@PathVariable int user_id){
+		return recordRepo.findAllByUserId(user_id);
+	}
+
+	//保存订单
+	@RequestMapping(value="/orderdsave",method=RequestMethod.POST)
+	public OrderForm orderdsave(
+			@RequestParam int address_id,
+			@RequestParam int seller_id,
+			@RequestParam int deal_id,
+			@RequestParam String type,
+			HttpServletRequest request){
+		Address address = addressService.findAddressById(address_id);
+		User me = getCurrentUser(request);
+		User seller = userService.findById(seller_id);
+		Deal deal = dealService.findById(deal_id);
+		OrderForm orderform = new OrderForm();
+
+		orderform.setAddress(address);
+		orderform.setSeller(seller);
+		orderform.setBuyer(me);
+		orderform.setDeal(deal);
+		orderform.setType(type);
+
+		return orderService.save(orderform);
+	}
+
+	//买家读取订单
+	@RequestMapping(value="/{buyer_id}/buyergetorder",method=RequestMethod.GET)
+	public List<OrderForm> findByBuyerId(
+			@PathVariable int buyer_id){
+		return orderService.findByBuyerId(buyer_id);
+	}
+
+	//卖家读取订单
+	@RequestMapping(value="/{seller_id}/sellergetorder",method=RequestMethod.GET)
+	public List<OrderForm> findBySellerId(
+			@PathVariable int seller_id){
+		return orderService.findBySellerId(seller_id);
+	}
+
+	//修改订单状态
+	@RequestMapping(value="/changeorder",method=RequestMethod.POST)
+	public boolean changeorder(
+			@RequestParam int  orderid,
+			@RequestParam String type){
+		OrderForm orderform = orderService.findByOrderId(orderid);
+		if (orderform==null) {
+			return false;
+		}else{
+			orderform.setType(type);
+			orderService.save(orderform);
+			return true;
 		}
+	}
+
+	//保存订单
+	@RequestMapping(value="/{orderid}/getorderbyid",method=RequestMethod.GET)
+	public OrderForm getorderbyid(
+			@PathVariable int orderid){
+
+		return orderService.findByOrderId(orderid);
+	}
 }

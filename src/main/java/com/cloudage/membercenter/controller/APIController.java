@@ -68,9 +68,6 @@ public class APIController {
 	IShoppingCarService shoppingCarService;
 	@Autowired
 	IAddressService addressService;
-	@Autowired
-	IOrderFormService orderService;
-
 
 
 	@RequestMapping(value = "/hello", method=RequestMethod.GET)
@@ -623,32 +620,4 @@ public class APIController {
 		latterService.updateUnread(meId, senderId);
 	} 
 
-	@RequestMapping(value="/order", method=RequestMethod.POST)
-	public OrderForm addOrder(
-			@RequestParam String buyerName,
-			@RequestParam String buyerAddress,
-			@RequestParam String buyerPhone,
-			@RequestParam String orderTitle,
-			@RequestParam String orderCarModel,
-			@RequestParam String orderBuyDate,
-			@RequestParam String orderTravelDistance,
-			@RequestParam Integer orderPrice,
-			@RequestParam String orderText,
-			@RequestParam String orderAvatar,
-			HttpServletRequest request){
-		User currentUser=getCurrentUser(request);
-		OrderForm order = new OrderForm();
-		order.setBuyerName(buyerName);
-		order.setBuyerPhone(buyerPhone);
-		order.setBuyerAddress(buyerAddress);
-		order.setBuyer(currentUser);
-		order.setOrderTitle(orderTitle);
-		order.setOrderCarModel(orderCarModel);
-		order.setOrderBuyDate(orderBuyDate);
-		order.setOrderTravelDistance(orderTravelDistance);
-		order.setOrderPrice(orderPrice);
-		order.setOrderText(orderText);
-
-		return orderService.save(order);
-	}
 }
