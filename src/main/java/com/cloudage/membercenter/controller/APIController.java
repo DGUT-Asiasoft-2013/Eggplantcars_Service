@@ -325,6 +325,7 @@ public class APIController {
 			@RequestParam String text,
 			MultipartFile dealAvatar,
 			HttpServletRequest request){
+		Integer stock=1;
 		User currentUser=getCurrentUser(request);
 		Deal deal = new Deal();
 		deal.setSeller(currentUser);
@@ -334,6 +335,7 @@ public class APIController {
 		deal.setTravelDistance(travelDistance);
 		deal.setPrice(price);
 		deal.setText(text);
+		deal.setStock(stock);
 
 		if (dealAvatar !=null) {
 			try {
@@ -348,7 +350,23 @@ public class APIController {
 
 		return dealService.save(deal);
 	}
-
+    //我出售的
+	@RequestMapping("/deal/{seller_id}/mysale") //所有登陆用户发表过的评论
+	public Page<Deal> getDealOfMe(
+			HttpServletRequest request){
+		User currentUser = getCurrentUser(request);
+		int seller_id = currentUser.getId();
+		return dealService.findAllOfMySale(seller_id, 0);
+	}
+	@RequestMapping("/deal/{seller_id}/mysale/{page}")
+	public Page<Deal> getDealOfMe(
+			HttpServletRequest request,
+			@PathVariable int page){
+		User currentUser= getCurrentUser(request);
+		int seller_id = currentUser.getId();
+		return dealService.findAllOfMySale(seller_id, page);
+	}
+	
 	@RequestMapping(value="/dealitems/{page}",method=RequestMethod.GET)
 	public Page<Deal> getDealItems(@PathVariable int page){
 		return dealService.getDealItems(page);
@@ -671,5 +689,22 @@ public class APIController {
 			return true;
 		}
 	}
+
+	
+	//商品下架
+		@RequestMapping(value="deal/{deal_id}/pullmysale",method=RequestMethod.POST)
+		public boolean pullSale(
+				@PathVariable int deal_id,
+				HttpServletRequest request){
+			Deal deal=dealService.findById(deal_id);
+			if (deal==null) {
+				return false;
+			}else{
+				Integer stock=0;
+				deal.setStock(stock);
+				dealService.save(deal);
+				return true;
+			}
+		}
 
 }

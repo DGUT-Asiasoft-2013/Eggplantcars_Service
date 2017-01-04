@@ -29,8 +29,8 @@ public class DefaultDealService implements IDealService{
 	public Page<Deal> getDealItems(int page) {
 		// TODO Auto-generated method stub
 		Sort sort = new Sort(Direction.DESC,"createDate");  //≈≈–Ú
-		PageRequest pageRequest = new PageRequest(page, 10, sort);
-		return dealRepo.findAll(pageRequest);
+		PageRequest pageRequest = new PageRequest(page, 6, sort);
+		return dealRepo.findSale(pageRequest);
 	}
 	@Override
 	public Page<Deal> searchTextByKeyword(String keyword, int page) {
@@ -48,6 +48,13 @@ public class DefaultDealService implements IDealService{
 	public void delectDeal(int deal_id) {
 		// TODO Auto-generated method stub
 		dealRepo.delectDeal(deal_id);
+	}
+	@Override
+	public Page<Deal> findAllOfMySale(int seller_id, int page) {
+		// TODO Auto-generated method stub
+		Sort sort = new Sort(Direction.DESC,"createDate");  //≈≈–Ú
+		PageRequest pageRequest = new PageRequest(page, 6, sort);
+		return dealRepo.findAllOfMySale(seller_id,pageRequest);
 	}
 
 }
