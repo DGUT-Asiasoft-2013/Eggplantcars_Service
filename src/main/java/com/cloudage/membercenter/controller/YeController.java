@@ -246,7 +246,7 @@ public class YeController {
 
 	//保存卖家消费记录
 	@RequestMapping(value="/sellerrecordsave",method=RequestMethod.POST)
-	public Record recordsave(
+	public Record sellerecordsave(
 			@RequestParam String record_type,
 			@RequestParam String text,
 			@RequestParam int my_cash,
@@ -261,6 +261,24 @@ public class YeController {
 		record.setRecord_cash(record_cash);
 		return recordRepo.save(record);
 	}
+	
+	//保存卖家消费记录
+		@RequestMapping(value="/buyerrecordsave",method=RequestMethod.POST)
+		public Record buyerecordsave(
+				@RequestParam String record_type,
+				@RequestParam String text,
+				@RequestParam int my_cash,
+				@RequestParam int record_cash,
+				@RequestParam int buyerid){
+			User seller = userService.findById(buyerid);
+			Record record = new Record();
+			record.setUser(seller);
+			record.setRecord_type(record_type);
+			record.setMy_cash(my_cash);
+			record.setText(text);
+			record.setRecord_cash(record_cash);
+			return recordRepo.save(record);
+		}
 
 
 	//获取当前用户钱包的数据
