@@ -16,5 +16,11 @@ public interface IDealRepository extends PagingAndSortingRepository<Deal,Integer
 	@Modifying
 	@Query("delete Deal deal where deal.id=?1")
 	void delectDeal(int deal_id);
+	
+	@Query("from Deal deal where deal.seller.id=?1 and deal.stock=1")
+	Page<Deal> findAllOfMySale(int seller_id, Pageable pageRequest);
+	
+	@Query("from Deal deal where deal.stock=1")
+	Page<Deal> findSale(Pageable pageRequest);
 
 }

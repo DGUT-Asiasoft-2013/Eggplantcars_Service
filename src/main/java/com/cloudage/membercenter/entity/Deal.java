@@ -30,8 +30,16 @@ public class Deal extends BaseEntity {
     String travelDistance;
     String buyDate;
     String price;
-
     
+	Integer stock;
+
+	public Integer getStock() {
+		return stock;
+	}
+	public void setStock(Integer stock) {
+		this.stock = stock;
+	}
+
     @ManyToOne(optional = false)
 	@JsonIgnore
 	public User getSeller() {
