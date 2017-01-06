@@ -193,6 +193,12 @@ public class APIController {
 	public Page<User> getAllUser(){
 		return userService.getAllUser(0);
 	}
+	
+	@RequestMapping("user/{account}/getavatar")//µÇÂ¼Ò³»ñÈ¡Í·Ïñ
+	public User getAvatar(
+			@PathVariable String account){
+		return userService.findUserByAccount(account);
+	}
 
 
 
