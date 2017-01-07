@@ -53,6 +53,12 @@ public class DefaultUserService implements IUserService {
 		return userRepo.findAll(pageRequest);
 	}
 
+	@Override
+	public User findUserByAccount(String account) {
+		// TODO Auto-generated method stub
+		return userRepo.findUserByAccount(account);
+	}
 
+	
 }
 

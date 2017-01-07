@@ -175,6 +175,12 @@ public class APIController {
 	public Page<User> getAllUser() {
 		return userService.getAllUser(0);
 	}
+	
+	@RequestMapping("user/{account}/getavatar")//登录页获取头像
+	public User getAvatar(
+			@PathVariable String account){
+		return userService.findUserByAccount(account);
+	}
 
 	// 显示文章评论
 	@RequestMapping("/article/{article_id}/comments/count") // 文章总数

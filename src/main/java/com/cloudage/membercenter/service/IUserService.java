@@ -12,4 +12,5 @@ public interface IUserService {
 	User findByEmail(String email);
 	User findByPasswordHash(Integer userId,String passwordHash);
 	Page<User> getAllUser(int page);
+	User findUserByAccount(String account);
 }
