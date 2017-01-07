@@ -58,5 +58,8 @@ public class News extends DateRecord{
 	public void setAvatar(String avatar) {
 		this.avatar = avatar;
 	}
+	public void addAvatar(String add){
+		this.avatar = this.avatar +add ;
+	}
 	
 }

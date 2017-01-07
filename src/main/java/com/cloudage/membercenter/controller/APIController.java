@@ -69,35 +69,29 @@ public class APIController {
 	@Autowired
 	IAddressService addressService;
 
-
-	@RequestMapping(value = "/hello", method=RequestMethod.GET)
-	public @ResponseBody String hello(){	
+	@RequestMapping(value = "/hello", method = RequestMethod.GET)
+	public @ResponseBody String hello() {
 		return "HELLO WORLD";
 	}
 
-	//	@RequestMapping(value="/register",method=RequestMethod.POST)
-	//	public User register(
-	//			@RequestParam String account
-	//			@RequestParam String passwordHash
-	//			@RequestParam String email
-	//			@RequestParam String name){
-	//		User user=new User();
-	//		user.setAccount(account);
-	//		user.setPasswordHash(passwordHash);
-	//		user.setEmail(email);
-	//		user.setName(name);
-	//		return userService.save(user);
-	//	}
+	// @RequestMapping(value="/register",method=RequestMethod.POST)
+	// public User register(
+	// @RequestParam String account
+	// @RequestParam String passwordHash
+	// @RequestParam String email
+	// @RequestParam String name){
+	// User user=new User();
+	// user.setAccount(account);
+	// user.setPasswordHash(passwordHash);
+	// user.setEmail(email);
+	// user.setName(name);
+	// return userService.save(user);
+	// }
 
-	//注册（数据提交）
-	@RequestMapping(value="/register", method=RequestMethod.POST)
-	public User register(
-			@RequestParam String account,
-			@RequestParam String passwordHash,
-			@RequestParam String email,
-			@RequestParam String name,
-			MultipartFile avatar,
-			HttpServletRequest request){
+	// 注册（数据提交）
+	@RequestMapping(value = "/register", method = RequestMethod.POST)
+	public User register(@RequestParam String account, @RequestParam String passwordHash, @RequestParam String email,
+			@RequestParam String name, MultipartFile avatar, HttpServletRequest request) {
 
 		User user = new User();
 		user.setAccount(account);
@@ -105,11 +99,11 @@ public class APIController {
 		user.setEmail(email);
 		user.setName(name);
 
-		if (avatar !=null) {
+		if (avatar != null) {
 			try {
-				String realPath=request.getSession().getServletContext().getRealPath("/WEB-INF/upload");
-				FileUtils.copyInputStreamToFile(avatar.getInputStream(), new File(realPath,account+".png"));
-				user.setAvatar("upload/"+account+".png");
+				String realPath = request.getSession().getServletContext().getRealPath("/WEB-INF/upload");
+				FileUtils.copyInputStreamToFile(avatar.getInputStream(), new File(realPath, account + ".png"));
+				user.setAvatar("upload/" + account + ".png");
 			} catch (Exception e) {
 				// TODO: handle exception
 				e.printStackTrace();
@@ -119,57 +113,45 @@ public class APIController {
 		return userService.save(user);
 	}
 
-
-	//登陆
-	@RequestMapping(value="/login",method=RequestMethod.POST)
-	public User login(
-			@RequestParam String account,
-			@RequestParam String passwordHash,
-			HttpServletRequest request){
-		User user =userService.findByAccount(account);
-		if (user!=null && user.getPasswordHash().equals(passwordHash)) {
-			HttpSession session=request.getSession(true);
+	// 登陆
+	@RequestMapping(value = "/login", method = RequestMethod.POST)
+	public User login(@RequestParam String account, @RequestParam String passwordHash, HttpServletRequest request) {
+		User user = userService.findByAccount(account);
+		if (user != null && user.getPasswordHash().equals(passwordHash)) {
+			HttpSession session = request.getSession(true);
 			session.setAttribute("uid", user.getId());
-			//request.getSession().setAttribute("user", user);
+			// request.getSession().setAttribute("user", user);
 			return user;
 		} else {
 			return null;
 		}
 	}
 
-
-	//显示用户信息 提供session
-	@RequestMapping(value="/me",method=RequestMethod.GET)
-	public User getCurrentUser(HttpServletRequest request)
-	{
-		HttpSession session=request.getSession();
-		Integer uid=(Integer) session.getAttribute("uid");
+	// 显示用户信息 提供session
+	@RequestMapping(value = "/me", method = RequestMethod.GET)
+	public User getCurrentUser(HttpServletRequest request) {
+		HttpSession session = request.getSession();
+		Integer uid = (Integer) session.getAttribute("uid");
 		return userService.findById(uid);
 	}
 
-
-	//找回密码
-	@RequestMapping(value="/passwordrecover",method=RequestMethod.POST)
-	public boolean repassword(
-			@RequestParam String email,
-			@RequestParam String passwordHash,
-			HttpServletRequest request){
-		User user =userService.findByEmail(email);
-		if (user==null) {
+	// 找回密码
+	@RequestMapping(value = "/passwordrecover", method = RequestMethod.POST)
+	public boolean repassword(@RequestParam String email, @RequestParam String passwordHash,
+			HttpServletRequest request) {
+		User user = userService.findByEmail(email);
+		if (user == null) {
 			return false;
-		}else{
+		} else {
 			user.setPasswordHash(passwordHash);
 			userService.save(user);
 			return true;
 		}
 	}
 
-	@RequestMapping(value="/article",method=RequestMethod.POST)
-	public Article addArticle(
-			@RequestParam String title,
-			@RequestParam String text,
-			HttpServletRequest request){
-		User currentUser=getCurrentUser(request);
+	@RequestMapping(value = "/article", method = RequestMethod.POST)
+	public Article addArticle(@RequestParam String title, @RequestParam String text, HttpServletRequest request) {
+		User currentUser = getCurrentUser(request);
 		Article article = new Article();
 		article.setAuthor(currentUser);
 		article.setTitle(title);
@@ -177,87 +159,73 @@ public class APIController {
 		return articleService.save(article);
 	}
 
-
-	//显示文章
-	@RequestMapping(value="/feeds/{page}",method=RequestMethod.GET)
-	public Page<Article> getFeeds(@PathVariable int page){
+	// 显示文章
+	@RequestMapping(value = "/feeds/{page}", method = RequestMethod.GET)
+	public Page<Article> getFeeds(@PathVariable int page) {
 		return articleService.getFeeds(page);
-	}	
-	@RequestMapping(value="/feeds",method=RequestMethod.GET)
-	public Page<Article> getFeeds(){
+	}
+
+	@RequestMapping(value = "/feeds", method = RequestMethod.GET)
+	public Page<Article> getFeeds() {
 		return getFeeds(0);
 	}
 
-	//获取所有用户
-	@RequestMapping(value="/alluser",method=RequestMethod.GET)
-	public Page<User> getAllUser(){
+	// 获取所有用户
+	@RequestMapping(value = "/alluser", method = RequestMethod.GET)
+	public Page<User> getAllUser() {
 		return userService.getAllUser(0);
 	}
 
-
-
-	//显示文章评论
-	@RequestMapping("/article/{article_id}/comments/count")//文章总数
-	public int getCommentsCountOfArticle(@PathVariable int article_id){
+	// 显示文章评论
+	@RequestMapping("/article/{article_id}/comments/count") // 文章总数
+	public int getCommentsCountOfArticle(@PathVariable int article_id) {
 		return commentService.getCommentCountOfArticle(article_id);
-	}	
-	@RequestMapping("/article/{article_id}/comments/{page}")//分页
-	public Page<Comment> getCommentsOfArticle(
-			@PathVariable int article_id,
-			@PathVariable int page){
-		return commentService.findCommentsOfArticle(article_id, page); 
 	}
-	@RequestMapping("/article/{article_id}/comments")//基本方法
-	public Page<Comment> getCommentsOfArticle(
-			@PathVariable int article_id){
+
+	@RequestMapping("/article/{article_id}/comments/{page}") // 分页
+	public Page<Comment> getCommentsOfArticle(@PathVariable int article_id, @PathVariable int page) {
+		return commentService.findCommentsOfArticle(article_id, page);
+	}
+
+	@RequestMapping("/article/{article_id}/comments") // 基本方法
+	public Page<Comment> getCommentsOfArticle(@PathVariable int article_id) {
 		return commentService.findCommentsOfArticle(article_id, 0);
 	}
-	@RequestMapping("/article/author_id/receivedcomment")//显示所有对某人的评论
-	public Page<Comment> getCommentsOfAuthor(
-			HttpServletRequest request){
+
+	@RequestMapping("/article/author_id/receivedcomment") // 显示所有对某人的评论
+	public Page<Comment> getCommentsOfAuthor(HttpServletRequest request) {
 		User currentUser = getCurrentUser(request);
 		int author_id = currentUser.getId();
 		return commentService.findCommentsOfAuthor(author_id, 0);
 	}
-	@RequestMapping("/article/author_id/receivedcomment/{page}")//分页
-	public Page<Comment> getCommentsOfAuthor(
-			HttpServletRequest request,
-			@PathVariable int page){
+
+	@RequestMapping("/article/author_id/receivedcomment/{page}") // 分页
+	public Page<Comment> getCommentsOfAuthor(HttpServletRequest request, @PathVariable int page) {
 		User currentUser = getCurrentUser(request);
 		int author_id = currentUser.getId();
 		return commentService.findCommentsOfAuthor(author_id, page);
 	}
 
-	@RequestMapping("/article/author_id/mycomments") //所有登陆用户发表过的评论
-	public Page<Comment> getCommentsOfMe(
-			HttpServletRequest request){
+	@RequestMapping("/article/author_id/mycomments") // 所有登陆用户发表过的评论
+	public Page<Comment> getCommentsOfMe(HttpServletRequest request) {
 		User currentUser = getCurrentUser(request);
 		int author_id = currentUser.getId();
 		return commentService.findAllOfMyComment(author_id, 0);
 	}
+
 	@RequestMapping("/article/author_id/mycomments/{page}")
-	public Page<Comment> getCommentsOfMe(
-			HttpServletRequest request,
-			@PathVariable int page){
-		User currentUser= getCurrentUser(request);
+	public Page<Comment> getCommentsOfMe(HttpServletRequest request, @PathVariable int page) {
+		User currentUser = getCurrentUser(request);
 		int author_id = currentUser.getId();
 		return commentService.findAllOfMyComment(author_id, page);
 	}
 
+	// 文章上传
 
+	// 评论上传
 
-
-	//文章上传
-
-
-
-	//评论上传
-
-	@RequestMapping(value="/article/{article_id}/comments",method=RequestMethod.POST)
-	public Comment postComment(
-			@PathVariable int article_id,
-			@RequestParam String text,
-			HttpServletRequest request){
+	@RequestMapping(value = "/article/{article_id}/comments", method = RequestMethod.POST)
+	public Comment postComment(@PathVariable int article_id, @RequestParam String text, HttpServletRequest request) {
 		User me = getCurrentUser(request);
 		Article article = articleService.findOne(article_id);
 		Comment comment = new Comment();
@@ -267,66 +235,67 @@ public class APIController {
 		return commentService.save(comment);
 	}
 
-
-	//news 上传
-	@RequestMapping(value="/news",method = RequestMethod.POST)
+	// news 上传
+	@RequestMapping(value = "/news", method = RequestMethod.POST)
 	public News postNews(
 			@RequestParam String title,
 			@RequestParam String text,
-			MultipartFile newsavatar,
-			HttpServletRequest request){
+			@RequestParam String avatarName,
+			MultipartFile[] newsavatar, 
+			HttpServletRequest request) {
 		User me = getCurrentUser(request);
-		News news  = new News();
+		News news = new News();
 		news.setAuthor(me);
 		news.setTitle(title);
 		news.setText(text);
-		if(newsavatar != null){
-			try {
-				String realPath = request.getSession().getServletContext().getRealPath("/WEB-INF/newsload");
-				FileUtils.copyInputStreamToFile(newsavatar.getInputStream(), new File(realPath,title+".png"));
-				news.setAvatar("newsload/"+title+".png");
-			} catch (Exception e) {
-				// TODO: handle exception
-				e.printStackTrace();
+		if (newsavatar != null) {
+			for (int i = 0; i < newsavatar.length; i++) {
+
+				try {
+					String realPath = request.getSession().getServletContext().getRealPath("/WEB-INF/newsload");
+
+					FileUtils.copyInputStreamToFile(newsavatar[i].getInputStream(),
+							new File(realPath, avatarName + "_" + i + ".png"));
+					if (i == 0) {
+						news.setAvatar("newsload/" + avatarName + "_" + i + ".png|");
+					} else {
+						news.addAvatar("newsload/" + avatarName + "_" + i + ".png|");
+					}
+
+				} catch (Exception e) {
+					// TODO: handle exception
+					e.printStackTrace();
+				}
 			}
 		}
 		return newsService.save(news);
 	}
-	//显示news
-	@RequestMapping(value="/shownews",method = RequestMethod.GET)
-	public Page<News> getNews(){
+
+	// 显示news
+	@RequestMapping(value = "/shownews", method = RequestMethod.GET)
+	public Page<News> getNews() {
 		return newsService.getNews(0);
 	}
-	@RequestMapping(value="/shownews/{page}",method= RequestMethod.GET)
-	public Page<News> getNews(
-			@PathVariable int page){
+
+	@RequestMapping(value = "/shownews/{page}", method = RequestMethod.GET)
+	public Page<News> getNews(@PathVariable int page) {
 		return newsService.getNews(page);
 	}
 
-
-
-
-	//	a
-	//用户与文章共同组成主键
+	// a
+	// 用户与文章共同组成主键
 	@RequestMapping("/article/s/{keyword}")
-	public Page<Article> searchArticlesWithKeyword(
-			@PathVariable String keyword,
-			@RequestParam(defaultValue="0") int page){
+	public Page<Article> searchArticlesWithKeyword(@PathVariable String keyword,
+			@RequestParam(defaultValue = "0") int page) {
 		return articleService.searchTextWithKeyword(keyword, page);
 	}
 
-	@RequestMapping(value="/deal", method=RequestMethod.POST)
-	public Deal addDeal(
-			@RequestParam String title,
-			@RequestParam String carModel,
-			@RequestParam String buyDate,
-			@RequestParam String travelDistance,
-			@RequestParam String price,
-			@RequestParam String text,
-			MultipartFile dealAvatar,
-			HttpServletRequest request){
-		Integer stock=1;
-		User currentUser=getCurrentUser(request);
+	@RequestMapping(value = "/deal", method = RequestMethod.POST)
+	public Deal addDeal(@RequestParam String title, @RequestParam String carModel, @RequestParam String buyDate,
+			@RequestParam String travelDistance, @RequestParam String price, @RequestParam String text,
+			MultipartFile dealAvatar, HttpServletRequest request) {
+		Integer stock = 1;
+		User currentUser = getCurrentUser(request);
 		Deal deal = new Deal();
 		deal.setSeller(currentUser);
 		deal.setTitle(title);
@@ -337,11 +306,11 @@ public class APIController {
 		deal.setText(text);
 		deal.setStock(stock);
 
-		if (dealAvatar !=null) {
+		if (dealAvatar != null) {
 			try {
-				String realPath=request.getSession().getServletContext().getRealPath("/WEB-INF/picload");
-				FileUtils.copyInputStreamToFile(dealAvatar.getInputStream(), new File(realPath,carModel+".png"));
-				deal.setDealAvatar("picload/"+carModel+".png");
+				String realPath = request.getSession().getServletContext().getRealPath("/WEB-INF/picload");
+				FileUtils.copyInputStreamToFile(dealAvatar.getInputStream(), new File(realPath, carModel + ".png"));
+				deal.setDealAvatar("picload/" + carModel + ".png");
 			} catch (Exception e) {
 				// TODO: handle exception
 				e.printStackTrace();
@@ -350,57 +319,49 @@ public class APIController {
 
 		return dealService.save(deal);
 	}
-    //我出售的
-	@RequestMapping("/deal/{seller_id}/mysale") //所有登陆用户发表过的评论
-	public Page<Deal> getDealOfMe(
-			HttpServletRequest request){
+
+	// 我出售的
+	@RequestMapping("/deal/{seller_id}/mysale") // 所有登陆用户发表过的评论
+	public Page<Deal> getDealOfMe(HttpServletRequest request) {
 		User currentUser = getCurrentUser(request);
 		int seller_id = currentUser.getId();
 		return dealService.findAllOfMySale(seller_id, 0);
 	}
+
 	@RequestMapping("/deal/{seller_id}/mysale/{page}")
-	public Page<Deal> getDealOfMe(
-			HttpServletRequest request,
-			@PathVariable int page){
-		User currentUser= getCurrentUser(request);
+	public Page<Deal> getDealOfMe(HttpServletRequest request, @PathVariable int page) {
+		User currentUser = getCurrentUser(request);
 		int seller_id = currentUser.getId();
 		return dealService.findAllOfMySale(seller_id, page);
 	}
-	
-	@RequestMapping(value="/dealitems/{page}",method=RequestMethod.GET)
-	public Page<Deal> getDealItems(@PathVariable int page){
+
+	@RequestMapping(value = "/dealitems/{page}", method = RequestMethod.GET)
+	public Page<Deal> getDealItems(@PathVariable int page) {
 		return dealService.getDealItems(page);
 	}
 
-	@RequestMapping(value="/dealitems",method=RequestMethod.GET)
-	public Page<Deal> getDealItems(){
+	@RequestMapping(value = "/dealitems", method = RequestMethod.GET)
+	public Page<Deal> getDealItems() {
 		return getDealItems(0);
 	}
 
 	@RequestMapping("/deal/s/{keyword}")
-	public Page<Deal> searchDealByKeword(
-			@PathVariable String keyword,
-			@RequestParam (defaultValue="0") int page
-			){
-		return dealService.searchTextByKeyword(keyword,page);
+	public Page<Deal> searchDealByKeword(@PathVariable String keyword, @RequestParam(defaultValue = "0") int page) {
+		return dealService.searchTextByKeyword(keyword, page);
 	}
+
 	@RequestMapping("/deal/{deal_id}/delect")
-	public void  delectDeal(
-			@PathVariable int deal_id,
-			HttpServletRequest request){
+	public void delectDeal(@PathVariable int deal_id, HttpServletRequest request) {
 		dealService.delectDeal(deal_id);
 	}
 
-	//发送私信
-	@RequestMapping(value="/privateLatter",method=RequestMethod.POST)
-	public PrivateLatter savePrivateLatter(
-			@RequestParam String text,
-			@RequestParam String latterType,
-			@RequestParam String receiverAccount,
-			HttpServletRequest request ){
+	// 发送私信
+	@RequestMapping(value = "/privateLatter", method = RequestMethod.POST)
+	public PrivateLatter savePrivateLatter(@RequestParam String text, @RequestParam String latterType,
+			@RequestParam String receiverAccount, HttpServletRequest request) {
 
-		//User currentUser=getCurrentUser(request);
-		//通过 别人的Account(账号)给他发送私信
+		// User currentUser=getCurrentUser(request);
+		// 通过 别人的Account(账号)给他发送私信
 		User me = getCurrentUser(request);
 		User receiver = userService.findByAccount(receiverAccount);
 		PrivateLatter latter = new PrivateLatter();
@@ -411,24 +372,18 @@ public class APIController {
 		return latterService.save(latter);
 	}
 
-	//接受私信(当前登录用户为接收者)
-	@RequestMapping(value="/getprivateLatter/{receiverId}")
-	public Page<PrivateLatter> getLatter(
-			@PathVariable int receiverId,
-			@RequestParam (defaultValue="0") int page,
-			HttpServletRequest request){
+	// 接受私信(当前登录用户为接收者)
+	@RequestMapping(value = "/getprivateLatter/{receiverId}")
+	public Page<PrivateLatter> getLatter(@PathVariable int receiverId, @RequestParam(defaultValue = "0") int page,
+			HttpServletRequest request) {
 		User me = getCurrentUser(request);
 		return latterService.findPrivateLetterByReveiverId(receiverId, me.getId(), page);
 	}
 
-
-
-	//收货地址删除
-	@RequestMapping(value="/address/del",method=RequestMethod.POST)
-	public Page<Address> delAddress(
-			@RequestParam String addressIdString,
-			@RequestParam (defaultValue = "0") int page,
-			HttpServletRequest request){
+	// 收货地址删除
+	@RequestMapping(value = "/address/del", method = RequestMethod.POST)
+	public Page<Address> delAddress(@RequestParam String addressIdString, @RequestParam(defaultValue = "0") int page,
+			HttpServletRequest request) {
 		User me = getCurrentUser(request);
 		int addressId = Integer.parseInt(addressIdString);
 		int meId = me.getId();
@@ -436,16 +391,10 @@ public class APIController {
 		return addressService.findAddressOfUser(meId, page);
 	}
 
-
-
-	//编辑收货地址
-	@RequestMapping(value="/address/update",method=RequestMethod.POST)
-	public Address addressUpdate(
-			@RequestParam String addressIdString,
-			@RequestParam String text,
-			@RequestParam String name,
-			@RequestParam String phoneNumber,
-			HttpServletRequest request){
+	// 编辑收货地址
+	@RequestMapping(value = "/address/update", method = RequestMethod.POST)
+	public Address addressUpdate(@RequestParam String addressIdString, @RequestParam String text,
+			@RequestParam String name, @RequestParam String phoneNumber, HttpServletRequest request) {
 		int addressId = Integer.parseInt(addressIdString);
 		Address address = addressService.findAddressById(addressId);
 		address.setText(text);
@@ -454,47 +403,35 @@ public class APIController {
 		return addressService.save(address);
 	}
 
-
-
-
-
-
-
-
-
-	@RequestMapping(value="/history",method=RequestMethod.POST)
-	public History addHistory(
-			@RequestParam String text,
-			HttpServletRequest request){
-		User currentUser=getCurrentUser(request);
-		History history=new History();
+	@RequestMapping(value = "/history", method = RequestMethod.POST)
+	public History addHistory(@RequestParam String text, HttpServletRequest request) {
+		User currentUser = getCurrentUser(request);
+		History history = new History();
 		history.setAuthor(currentUser);
 		history.setText(text);
 		return historyService.save(history);
 	}
 
-	@RequestMapping(value="/historyitems/{page}",method=RequestMethod.GET)
-	public Page<History> getHistoryItems(@PathVariable int page){
+	@RequestMapping(value = "/historyitems/{page}", method = RequestMethod.GET)
+	public Page<History> getHistoryItems(@PathVariable int page) {
 		return historyService.getHistoryItems(page);
 	}
 
-	@RequestMapping(value="/historyitems",method=RequestMethod.GET)
-	public Page<History> getHistoryItems(){
+	@RequestMapping(value = "/historyitems", method = RequestMethod.GET)
+	public Page<History> getHistoryItems() {
 		return getHistoryItems(0);
 	}
+
 	@RequestMapping("/delecthistory")
-	public void  delectHistory(
-			HttpServletRequest request){
+	public void delectHistory(HttpServletRequest request) {
 		User currentUser = getCurrentUser(request);
 		int author_id = currentUser.getId();
 		historyService.delectAllOfHistory(author_id);
 	}
 
-	@RequestMapping(value="/News/{news_id}/comments",method=RequestMethod.POST)
-	public NewsComment postNewsComment(
-			@PathVariable int news_id,
-			@RequestParam String text,
-			HttpServletRequest request){
+	@RequestMapping(value = "/News/{news_id}/comments", method = RequestMethod.POST)
+	public NewsComment postNewsComment(@PathVariable int news_id, @RequestParam String text,
+			HttpServletRequest request) {
 		User me = getCurrentUser(request);
 		News news = newsService.findOne(news_id);
 		NewsComment newsComment = new NewsComment();
@@ -504,93 +441,76 @@ public class APIController {
 		return newsCommentService.save(newsComment);
 	}
 
-	@RequestMapping("/News/{news_id}/comments/{page}")//分页
-	public Page<NewsComment> getNewsCommentsOfNews(
-			@PathVariable int news_id,
-			@PathVariable int page){
-		return newsCommentService.findNewsCommentsOfNews(news_id, page); 
+	@RequestMapping("/News/{news_id}/comments/{page}") // 分页
+	public Page<NewsComment> getNewsCommentsOfNews(@PathVariable int news_id, @PathVariable int page) {
+		return newsCommentService.findNewsCommentsOfNews(news_id, page);
 	}
-	@RequestMapping("/News/{news_id}/comments")//基本方法
-	public Page<NewsComment> getNewsCommentsOfNews(
-			@PathVariable int news_id){
+
+	@RequestMapping("/News/{news_id}/comments") // 基本方法
+	public Page<NewsComment> getNewsCommentsOfNews(@PathVariable int news_id) {
 		return newsCommentService.findNewsCommentsOfNews(news_id, 0);
 	}
 
-	@RequestMapping("/news/author_id/receivedcomment")//显示所有对某人的评论
-	public Page<NewsComment> getNewsCommentsOfAuthor(
-			HttpServletRequest request){
+	@RequestMapping("/news/author_id/receivedcomment") // 显示所有对某人的评论
+	public Page<NewsComment> getNewsCommentsOfAuthor(HttpServletRequest request) {
 		User currentUser = getCurrentUser(request);
 		int author_id = currentUser.getId();
 		return newsCommentService.findNewsCommentsOfAuthor(author_id, 0);
 	}
-	@RequestMapping("/news/author_id/receivedcomment/{page}")//分页
-	public Page<NewsComment> getNewsCommentsOfAuthor(
-			HttpServletRequest request,
-			@PathVariable int page){
+
+	@RequestMapping("/news/author_id/receivedcomment/{page}") // 分页
+	public Page<NewsComment> getNewsCommentsOfAuthor(HttpServletRequest request, @PathVariable int page) {
 		User currentUser = getCurrentUser(request);
 		int author_id = currentUser.getId();
 		return newsCommentService.findNewsCommentsOfAuthor(author_id, page);
 	}
 
-	@RequestMapping("/news/author_id/mycomments") //所有登陆用户发表过的评论
-	public Page<NewsComment> getNewsCommentsOfMe(
-			HttpServletRequest request){
+	@RequestMapping("/news/author_id/mycomments") // 所有登陆用户发表过的评论
+	public Page<NewsComment> getNewsCommentsOfMe(HttpServletRequest request) {
 		User currentUser = getCurrentUser(request);
 		int author_id = currentUser.getId();
 		return newsCommentService.findAllOfMyNewsComment(author_id, 0);
 	}
+
 	@RequestMapping("/news/author_id/mycomments/{page}")
-	public Page<NewsComment> getNewsCommentsOfMe(
-			HttpServletRequest request,
-			@PathVariable int page){
-		User currentUser= getCurrentUser(request);
+	public Page<NewsComment> getNewsCommentsOfMe(HttpServletRequest request, @PathVariable int page) {
+		User currentUser = getCurrentUser(request);
 		int author_id = currentUser.getId();
 		return newsCommentService.findAllOfMyNewsComment(author_id, page);
 	}
 
-
 	@RequestMapping("deal/{deal_id}/shoppingcar")
-	public void addShoppingCar(
-			@PathVariable int deal_id,
-			HttpServletRequest request){
-		User currentUser=getCurrentUser(request);
-		Deal deal=dealService.findById(deal_id);
-		shoppingCarService.addShoppingCar(deal,currentUser);
+	public void addShoppingCar(@PathVariable int deal_id, HttpServletRequest request) {
+		User currentUser = getCurrentUser(request);
+		Deal deal = dealService.findById(deal_id);
+		shoppingCarService.addShoppingCar(deal, currentUser);
 	}
 
 	@RequestMapping("/myshoppingcar")
-	public Page<ShoppingCar> getMyShoppingCar(
-			HttpServletRequest request){
+	public Page<ShoppingCar> getMyShoppingCar(HttpServletRequest request) {
 		User currentUser = getCurrentUser(request);
 		int buyer_id = currentUser.getId();
 		return shoppingCarService.findMyShoppingCar(buyer_id, 0);
 	}
-	@RequestMapping("/myshoppingcar/{page}")//分页
-	public Page<ShoppingCar> getMyShoppingCar(
-			HttpServletRequest request,
-			@PathVariable int page){
+
+	@RequestMapping("/myshoppingcar/{page}") // 分页
+	public Page<ShoppingCar> getMyShoppingCar(HttpServletRequest request, @PathVariable int page) {
 		User currentUser = getCurrentUser(request);
 		int buyer_id = currentUser.getId();
 		return shoppingCarService.findMyShoppingCar(buyer_id, page);
 	}
 
 	@RequestMapping("/myshoppingcar/{deal_id}/delect")
-	public void  delectMyShoppingCar(
-			@PathVariable int deal_id,
-			HttpServletRequest request){
+	public void delectMyShoppingCar(@PathVariable int deal_id, HttpServletRequest request) {
 		User currentUser = getCurrentUser(request);
 		int buyer_id = currentUser.getId();
-		shoppingCarService.delectMyShoppingCar(deal_id,buyer_id);
+		shoppingCarService.delectMyShoppingCar(deal_id, buyer_id);
 	}
 
-	//上传收货地址
-	@RequestMapping(value="/setaddress",method=RequestMethod.POST)
-	public Address setAddress(
-			@RequestParam String text,
-			@RequestParam String name,
-			@RequestParam String phoneNumber,
-			HttpServletRequest request
-			){
+	// 上传收货地址
+	@RequestMapping(value = "/setaddress", method = RequestMethod.POST)
+	public Address setAddress(@RequestParam String text, @RequestParam String name, @RequestParam String phoneNumber,
+			HttpServletRequest request) {
 		User user = getCurrentUser(request);
 		Address address = new Address();
 		address.setUser(user);
@@ -599,88 +519,77 @@ public class APIController {
 		address.setPhoneNumber(phoneNumber);
 		return addressService.save(address);
 	}
-	//获取收获地址
+
+	// 获取收获地址
 	@RequestMapping("/getaddress")
-	public Page<Address> getAddress(
-			@RequestParam(defaultValue="0") int page,
-			HttpServletRequest request){
+	public Page<Address> getAddress(@RequestParam(defaultValue = "0") int page, HttpServletRequest request) {
 		User me = getCurrentUser(request);
 		int meId = me.getId();
 		return addressService.findAddressOfUser(meId, page);
 	}
+
 	@RequestMapping("/getlastaddress")
-	public Address getlastAddress(
-			HttpServletRequest request){
+	public Address getlastAddress(HttpServletRequest request) {
 		User me = getCurrentUser(request);
 		int meId = me.getId();
 		return addressService.findLastAddressOfUser(meId);
 	}
 
-
-	//或许未读消息条数  get
+	// 或许未读消息条数 get
 	@RequestMapping("/unread/{senderId}")
-	public int countUnreadMessage(
-			@PathVariable int senderId,
-			HttpServletRequest request){
-		User me= getCurrentUser(request);
+	public int countUnreadMessage(@PathVariable int senderId, HttpServletRequest request) {
+		User me = getCurrentUser(request);
 		int meId = me.getId();
 		return latterService.countUnreadMessages(meId, senderId);
 	}
 
-	//修改未读消息为已读    post
-	@RequestMapping(value="/unread/update",method=RequestMethod.POST)
-	public void updateUnread(
-			@RequestParam String senderIdString,
-			HttpServletRequest request){
+	// 修改未读消息为已读 post
+	@RequestMapping(value = "/unread/update", method = RequestMethod.POST)
+	public void updateUnread(@RequestParam String senderIdString, HttpServletRequest request) {
 		User me = getCurrentUser(request);
-		int meId = me.getId();	
+		int meId = me.getId();
 		int senderId = Integer.parseInt(senderIdString);
 		latterService.updateUnread(meId, senderId);
-	} 
+	}
 
-	//修改昵称
-	@RequestMapping(value="/namechange",method=RequestMethod.POST)
-	public boolean namechange(
-			@RequestParam String name,
-			HttpServletRequest request){
-		User currentUser=getCurrentUser(request);
-		if (currentUser==null) {
+	// 修改昵称
+	@RequestMapping(value = "/namechange", method = RequestMethod.POST)
+	public boolean namechange(@RequestParam String name, HttpServletRequest request) {
+		User currentUser = getCurrentUser(request);
+		if (currentUser == null) {
 			return false;
-		}else{
+		} else {
 			currentUser.setName(name);
 			userService.save(currentUser);
 			return true;
 		}
 	}
 
-	//修改邮箱
-	@RequestMapping(value="/emailchange",method=RequestMethod.POST)
-	public boolean emailchange(
-			@RequestParam String email,
-			HttpServletRequest request){
-		User currentUser=getCurrentUser(request);
-		if (currentUser==null) {
+	// 修改邮箱
+	@RequestMapping(value = "/emailchange", method = RequestMethod.POST)
+	public boolean emailchange(@RequestParam String email, HttpServletRequest request) {
+		User currentUser = getCurrentUser(request);
+		if (currentUser == null) {
 			return false;
-		}else{
+		} else {
 			currentUser.setEmail(email);
 			userService.save(currentUser);
 			return true;
 		}
 	}
 
-	//修改头像
-	@RequestMapping(value="/avatarchange",method=RequestMethod.POST)
-	public boolean avatarchange(
-			MultipartFile avatar,
-			HttpServletRequest request){
-		User currentUser=getCurrentUser(request);
-		if (currentUser==null) {
+	// 修改头像
+	@RequestMapping(value = "/avatarchange", method = RequestMethod.POST)
+	public boolean avatarchange(MultipartFile avatar, HttpServletRequest request) {
+		User currentUser = getCurrentUser(request);
+		if (currentUser == null) {
 			return false;
-		}else{
+		} else {
 			try {
-				String realPath=request.getSession().getServletContext().getRealPath("/WEB-INF/upload");
-				FileUtils.copyInputStreamToFile(avatar.getInputStream(), new File(realPath,currentUser.getAccount()+".png"));
-				currentUser.setAvatar("upload/"+currentUser.getAccount()+".png");
+				String realPath = request.getSession().getServletContext().getRealPath("/WEB-INF/upload");
+				FileUtils.copyInputStreamToFile(avatar.getInputStream(),
+						new File(realPath, currentUser.getAccount() + ".png"));
+				currentUser.setAvatar("upload/" + currentUser.getAccount() + ".png");
 				userService.save(currentUser);
 			} catch (Exception e) {
 				// TODO: handle exception
@@ -690,21 +599,18 @@ public class APIController {
 		}
 	}
 
-	
-	//商品下架
-		@RequestMapping(value="deal/{deal_id}/pullmysale",method=RequestMethod.POST)
-		public boolean pullSale(
-				@PathVariable int deal_id,
-				HttpServletRequest request){
-			Deal deal=dealService.findById(deal_id);
-			if (deal==null) {
-				return false;
-			}else{
-				Integer stock=0;
-				deal.setStock(stock);
-				dealService.save(deal);
-				return true;
-			}
+	// 商品下架
+	@RequestMapping(value = "deal/{deal_id}/pullmysale", method = RequestMethod.POST)
+	public boolean pullSale(@PathVariable int deal_id, HttpServletRequest request) {
+		Deal deal = dealService.findById(deal_id);
+		if (deal == null) {
+			return false;
+		} else {
+			Integer stock = 0;
+			deal.setStock(stock);
+			dealService.save(deal);
+			return true;
 		}
+	}
 
 }
